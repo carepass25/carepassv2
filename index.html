@@ -204,224 +204,221 @@
   <footer class="text-center text-sm text-gray-500 p-4">CarePass: Your secure key to trusted healthcare.</footer>
 
   <script>
-    // REPLACE with your Apps Script URL
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwAoX5xew3C4LG9eZLFzEqlb6_e1-j43DDoC03zlPogbCtZz7udTKOFZ_OFu-kZJJ7kIw/exec";
+  // Backend endpoint
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxJ6ufD8wXV338ZGXHqNIDhHe2CWV5PaRJ3ot2cmzvYuAM8zRkhSr56nWO2kP2Y05uN/exec";
 
-    const loader = document.getElementById("loadingOverlay");
-    const toast = document.getElementById("toast");
+  const loader = document.getElementById("loadingOverlay");
+  const toast = document.getElementById("toast");
 
-    function showLoader() { loader.classList.remove("hidden"); }
-    function hideLoader() { loader.classList.add("hidden"); }
+  function showLoader() { loader.classList.remove("hidden"); }
+  function hideLoader() { loader.classList.add("hidden"); }
 
-    function showToast(msg, success = true) {
-      toast.textContent = msg;
-      toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 ${success ? "bg-green-600" : "bg-red-600"} text-white`;
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 2000);
-    }
+  function showToast(msg, success = true) {
+    toast.textContent = msg;
+    toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 ${success ? "bg-green-600" : "bg-red-600"} text-white`;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 2500);
+  }
 
-    // serialize form -> object (keeps arrays)
-    function formToPairs(form, extra = {}) {
-      const data = new FormData(form);
-      const pairs = {};
-      for (const [key, value] of data.entries()) {
-        if (pairs[key] !== undefined) {
-          if (!Array.isArray(pairs[key])) pairs[key] = [pairs[key]];
-          pairs[key].push(value);
-        } else {
-          pairs[key] = value;
-        }
-      }
-      return { ...pairs, ...extra };
-    }
-
-    // POST to Apps Script (sends arrays correctly)
-    async function postForm(dataObj) {
-      try {
-        showLoader();
-        const body = new URLSearchParams();
-        for (const [k, v] of Object.entries(dataObj)) {
-          if (Array.isArray(v)) v.forEach(x => body.append(k, x));
-          else body.append(k, v);
-        }
-        const res = await fetch(GAS_URL, { method: "POST", body });
-        return await res.json();
-      } catch (err) {
-        console.error("Fetch error:", err);
-        return { ok: false, error: "Network error" };
-      } finally {
-        hideLoader();
-      }
-    }
-
-    // Navigation
-    document.querySelectorAll("[data-target]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-target");
-        document.querySelector("#menu-screen").classList.remove("active");
-        setTimeout(() => {
-          document.querySelector("#menu-screen").classList.add("hidden");
-          document.querySelector("main").classList.remove("hidden");
-          document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
-          const section = document.getElementById(target);
-          section.classList.remove("hidden");
-          setTimeout(() => section.classList.add("active"), 20);
-        }, 220);
-      });
-    });
-
-    // Back buttons
-    document.querySelectorAll(".back-btn").forEach(btn => {
-      btn.addEventListener("click", () => goHome());
-    });
-
-    function goHome() {
-      const activeSection = document.querySelector("main section:not(.hidden)");
-      if (activeSection) {
-        activeSection.classList.remove("active");
-        setTimeout(() => {
-          activeSection.classList.add("hidden");
-          document.querySelector("main").classList.add("hidden");
-          document.querySelector("#menu-screen").classList.remove("hidden");
-          setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 20);
-        }, 220);
-      }
-      clearForms();
-    }
-
-    function clearForms() {
-      document.querySelectorAll("form").forEach(f => f.reset());
-      const bmiResult = document.getElementById("bmiResult"); if (bmiResult) bmiResult.textContent = "";
-      const bpWarn = document.getElementById("bpWarning"); if (bpWarn) bpWarn.classList.add("hidden");
-      const allList = document.getElementById("allergiesList");
-      if (allList) allList.innerHTML = `<input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded" />`;
-      const medList = document.getElementById("medicationsList");
-      if (medList) medList.innerHTML = `<input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded" />`;
-      const accessResult = document.getElementById("accessResult"); if (accessResult) accessResult.classList.add("hidden");
-    }
-
-    // NFC simulation
-    function simulateNfcScan(inputEl) {
-      const id = "CP-" + Math.random().toString(36).slice(2, 10).toUpperCase();
-      inputEl.value = id;
-      showToast("Simulated NFC: " + id, true);
-    }
-    document.getElementById("scanNfcBtnReg").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputReg")));
-    document.getElementById("scanNfcBtnUpd").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputUpd")));
-    document.getElementById("scanNfcBtnAcc").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputAcc")));
-
-    // Register handler (returns home after 1s)
-    document.getElementById("registerForm").onsubmit = async e => {
-      e.preventDefault();
-      const res = await postForm(formToPairs(e.target, { action: "register" }));
-      if (res.ok) {
-        showToast(res.message || "CarePass Created! 🎉", true);
-        e.target.reset();
-        setTimeout(goHome, 1000);
+  // Serialize form
+  function formToPairs(form, extra = {}) {
+    const data = new FormData(form);
+    const pairs = {};
+    for (const [key, value] of data.entries()) {
+      if (pairs[key] !== undefined) {
+        if (!Array.isArray(pairs[key])) pairs[key] = [pairs[key]];
+        pairs[key].push(value);
       } else {
-        showToast(res.error || "Register failed", false);
+        pairs[key] = value;
       }
-    };
-
-    // Update handler (clear draft & return home after 1s on success)
-    document.getElementById("updateForm").onsubmit = async e => {
-      e.preventDefault();
-      const res = await postForm(formToPairs(e.target, { action: "update" }));
-      if (res.ok) {
-        showToast(res.message || "Record Updated! ✅", true);
-        e.target.reset();
-        try { localStorage.removeItem("draftUpdateForm"); } catch (err) {}
-        setTimeout(goHome, 1000);
-      } else {
-        showToast(res.error || "Update failed", false);
-      }
-    };
-
-    // Doctor access handler (stays on page and shows result)
-    document.getElementById("accessForm").onsubmit = async e => {
-      e.preventDefault();
-      const res = await postForm(formToPairs(e.target, { action: "access" }));
-      const resultDiv = document.getElementById("accessResult");
-      resultDiv.innerHTML = "";
-      if (res.ok) {
-        showToast("Access granted ✅", true);
-        // Format result
-        const data = res.data || {};
-        let html = "<ul class='space-y-1'>";
-        for (const k in data) {
-          if (["Raw"].includes(k)) continue;
-          const label = k.replace(/([A-Z])/g, ' $1').trim();
-          const v = (data[k] === '' || data[k] === null || data[k] === undefined) ? "N/A" : data[k];
-          html += `<li class="py-1"><span class="font-semibold text-gray-700">${label}:</span> ${v}</li>`;
-        }
-        html += "</ul>";
-        resultDiv.innerHTML = html;
-        resultDiv.classList.remove("hidden");
-      } else {
-        showToast(res.error || "Access failed", false);
-        resultDiv.classList.add("hidden");
-      }
-    };
-
-    // BMI & BP
-    const heightInput = document.getElementById("heightInput");
-    const weightInput = document.getElementById("weightInput");
-    const bmiResult = document.getElementById("bmiResult");
-    if (heightInput) heightInput.addEventListener("input", calcBMI);
-    if (weightInput) weightInput.addEventListener("input", calcBMI);
-    function calcBMI() {
-      const h = parseFloat(heightInput.value) / 100;
-      const w = parseFloat(weightInput.value);
-      if (h > 0 && w > 0) bmiResult.textContent = `BMI: ${(w / (h*h)).toFixed(1)}`;
-      else bmiResult.textContent = "";
     }
+    return { ...pairs, ...extra };
+  }
 
-    const bpInput = document.getElementById("bpInput");
-    const bpWarning = document.getElementById("bpWarning");
-    if (bpInput) bpInput.addEventListener("input", () => {
-      const m = bpInput.value.match(/(\d+)\s*\/\s*(\d+)/);
-      if (m) {
-        const s = +m[1], d = +m[2];
-        if (s < 90 || s > 140 || d < 60 || d > 90) bpWarning.classList.remove("hidden");
-        else bpWarning.classList.add("hidden");
-      } else bpWarning.classList.add("hidden");
-    });
-
-    // Dynamic fields
-    document.getElementById("addAllergyBtn").onclick = () => {
-      document.getElementById("allergiesList").insertAdjacentHTML("beforeend",
-        `<input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded mt-2" />`);
-    };
-    document.getElementById("addMedicationBtn").onclick = () => {
-      document.getElementById("medicationsList").insertAdjacentHTML("beforeend",
-        `<input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded mt-2" />`);
-    };
-
-    // Save / load draft (update form)
-    document.getElementById("saveDraftBtn").onclick = () => {
-      try {
-        const obj = Object.fromEntries(new FormData(document.getElementById("updateForm")));
-        localStorage.setItem("draftUpdateForm", JSON.stringify(obj));
-        showToast("Draft saved locally ✅", true);
-      } catch (err) {
-        showToast("Draft save failed", false);
+  // POST helper
+  async function postForm(dataObj) {
+    try {
+      showLoader();
+      const body = new URLSearchParams();
+      for (const [k, v] of Object.entries(dataObj)) {
+        if (Array.isArray(v)) v.forEach(x => body.append(k, x));
+        else body.append(k, v);
       }
-    };
+      const res = await fetch(GAS_URL, { method: "POST", body });
+      return await res.json();
+    } catch (err) {
+      console.error("Fetch error:", err);
+      return { ok: false, error: "Network error" };
+    } finally {
+      hideLoader();
+    }
+  }
 
-    window.addEventListener("load", () => {
-      try {
-        const d = localStorage.getItem("draftUpdateForm");
-        if (d) {
-          const obj = JSON.parse(d);
-          Object.entries(obj).forEach(([k, v]) => {
-            const el = document.querySelector(`#updateForm [name="${k}"]`);
-            if (el) el.value = v;
-          });
-          showToast("Draft loaded 📂", true);
-        }
-      } catch (err) {}
-      setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 50);
+  // Navigation
+  document.querySelectorAll("[data-target]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-target");
+      document.querySelector("#menu-screen").classList.remove("active");
+      setTimeout(() => {
+        document.querySelector("#menu-screen").classList.add("hidden");
+        document.querySelector("main").classList.remove("hidden");
+        document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+        const section = document.getElementById(target);
+        section.classList.remove("hidden");
+        setTimeout(() => section.classList.add("active"), 20);
+      }, 220);
     });
-  </script>
+  });
+
+  // Back to menu
+  document.querySelectorAll(".back-btn").forEach(btn => {
+    btn.addEventListener("click", () => goHome());
+  });
+  function goHome() {
+    const activeSection = document.querySelector("main section:not(.hidden)");
+    if (activeSection) {
+      activeSection.classList.remove("active");
+      setTimeout(() => {
+        activeSection.classList.add("hidden");
+        document.querySelector("main").classList.add("hidden");
+        document.querySelector("#menu-screen").classList.remove("hidden");
+        setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 20);
+      }, 220);
+    }
+    clearForms();
+  }
+
+  function clearForms() {
+    document.querySelectorAll("form").forEach(f => f.reset());
+    if (document.getElementById("bmiResult")) document.getElementById("bmiResult").textContent = "";
+    if (document.getElementById("bpWarning")) document.getElementById("bpWarning").classList.add("hidden");
+  }
+
+  // ✅ Web NFC support
+  async function scanNfc(targetInputId) {
+    if ("NDEFReader" in window) {
+      try {
+        const ndef = new NDEFReader();
+        await ndef.scan();
+        showToast("📡 Hold your NFC card near the phone...");
+        ndef.onreading = event => {
+          const decoder = new TextDecoder();
+          let nfcId = "";
+          for (const record of event.message.records) {
+            nfcId += decoder.decode(record.data);
+          }
+          document.getElementById(targetInputId).value =
+            nfcId || "CP-" + Math.floor(100000 + Math.random() * 900000);
+          showToast("✅ NFC Card read successfully");
+        };
+      } catch (error) {
+        console.error("NFC Scan failed:", error);
+        showToast("❌ NFC scan error: " + error.message, false);
+      }
+    } else {
+      showToast("⚠️ Web NFC not supported on this device", false);
+    }
+  }
+
+  // Bind NFC buttons
+  document.getElementById("scanNfcBtnReg").addEventListener("click", () => scanNfc("carePassIdInputReg"));
+  document.getElementById("scanNfcBtnUpd").addEventListener("click", () => scanNfc("carePassIdInputUpd"));
+  document.getElementById("scanNfcBtnAcc").addEventListener("click", () => scanNfc("carePassIdInputAcc"));
+
+  // BMI calculation
+  ["heightInput","weightInput"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", () => {
+      const h = parseFloat(document.getElementById("heightInput").value);
+      const w = parseFloat(document.getElementById("weightInput").value);
+      if (h && w) {
+        const bmi = (w / ((h/100) ** 2)).toFixed(1);
+        let status = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal" : bmi < 30 ? "Overweight" : "Obese";
+        document.getElementById("bmiResult").textContent = `BMI: ${bmi} (${status})`;
+      }
+    });
+  });
+
+  // BP warning
+  document.getElementById("bpInput").addEventListener("input", e => {
+    const txt = e.target.value.trim();
+    const warn = document.getElementById("bpWarning");
+    if (/^\d{2,3}\/\d{2,3}$/.test(txt)) {
+      const [s, d] = txt.split("/").map(Number);
+      warn.classList.toggle("hidden", !(s > 140 || d > 90));
+    } else {
+      warn.classList.add("hidden");
+    }
+  });
+
+  // Add allergy/medication fields
+  document.getElementById("addAllergyBtn").addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.innerHTML = `<input name="allergies[]" type="text" placeholder="e.g. Dust" class="w-full border border-gray-300 p-2 rounded" />`;
+    document.getElementById("allergiesList").appendChild(div);
+  });
+  document.getElementById("addMedicationBtn").addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.innerHTML = `<input name="medications[]" type="text" placeholder="e.g. Paracetamol 500mg" class="w-full border border-gray-300 p-2 rounded" />`;
+    document.getElementById("medicationsList").appendChild(div);
+  });
+
+  // Register
+  document.getElementById("registerForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = formToPairs(e.target, { action: "register" });
+    const res = await postForm(data);
+    showToast(res.ok ? "✅ CarePass created" : "❌ Error: " + res.error, res.ok);
+    if (res.ok) goHome();
+  });
+
+  // Update
+  document.getElementById("updateForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = formToPairs(e.target, { action: "update" });
+    const res = await postForm(data);
+    showToast(res.ok ? "✅ Record updated" : "❌ Error: " + res.error, res.ok);
+    if (res.ok) goHome();
+  });
+
+  // Save Draft (localStorage)
+  document.getElementById("saveDraftBtn").addEventListener("click", () => {
+    const data = formToPairs(document.getElementById("updateForm"));
+    localStorage.setItem("carepassDraft", JSON.stringify(data));
+    showToast("💾 Draft saved locally");
+  });
+  window.addEventListener("load", () => {
+    const draft = localStorage.getItem("carepassDraft");
+    if (draft) {
+      try {
+        const obj = JSON.parse(draft);
+        Object.keys(obj).forEach(k => {
+          const els = document.querySelectorAll(`[name='${k}']`);
+          if (els.length) {
+            if (Array.isArray(obj[k])) obj[k].forEach((val,i) => els[i]?.value = val);
+            else els[0].value = obj[k];
+          }
+        });
+      } catch {}
+    }
+  });
+
+  // Doctor Access
+  document.getElementById("accessForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = formToPairs(e.target, { action: "access" });
+    const res = await postForm(data);
+    const resultDiv = document.getElementById("accessResult");
+    resultDiv.classList.remove("hidden");
+    if (res.ok && res.record) {
+      resultDiv.innerHTML = `<h3 class="font-bold mb-2">Patient Record:</h3><pre>${JSON.stringify(res.record, null, 2)}</pre>`;
+      showToast("✅ Record retrieved");
+    } else {
+      resultDiv.textContent = "❌ " + (res.error || "Not found");
+      showToast("❌ Error: " + (res.error || "Not found"), false);
+    }
+  });
+</script>
+
 </body>
 </html>

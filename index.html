@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>CarePass – Your Key to Secure Health Data</title>
+  <link rel="icon" href="assets/IMG_20250822_103325.png" type="image/png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* transitions */
+    .fade-section { opacity: 0; transform: scale(0.95); transition: all 0.4s ease-in-out; }
+    .fade-section.active { opacity: 1; transform: scale(1); }
+    @media (min-width:1024px) { .fade-section { transform: scale(0.92); } .fade-section.active { transform: scale(1.03); } }
+    input, select, textarea, button { font-size: 16px; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+
+  <!-- Loader -->
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center space-y-3">
+      <div class="w-12 h-12 border-4 border-dashed border-blue-600 rounded-full animate-spin"></div>
+      <p class="text-gray-700 font-medium">Processing...</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 text-white"></div>
+
+  <!-- Menu -->
+  <div id="menu-screen" class="max-w-lg mx-auto p-6 space-y-6 fade-section active">
+    <h2 class="text-3xl font-bold text-center mb-4">💙 CarePass 🩺</h2>
+    <div class="grid gap-4">
+      <button data-target="register" class="w-full bg-blue-600 text-white p-5 rounded-xl shadow hover:bg-blue-700 text-lg">🔐 Create CarePass</button>
+      <button data-target="update" class="w-full bg-green-600 text-white p-5 rounded-xl shadow hover:bg-green-700 text-lg">📝 Update Records</button>
+      <button data-target="access" class="w-full bg-indigo-600 text-white p-5 rounded-xl shadow hover:bg-indigo-700 text-lg">🧑‍⚕ Doctor Access</button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main id="content" class="max-w-lg mx-auto p-4 sm:p-6 space-y-10 hidden">
+
+    <!-- Register -->
+    <section id="register" class="hidden bg-white p-6 rounded-lg shadow fade-section">
+      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
+      <h2 class="text-2xl font-semibold mb-4">🔐 Create Your CarePass</h2>
+      <form id="registerForm" class="space-y-4">
+        <div>
+          <label class="block font-medium mb-1">Role:</label>
+          <select name="role" required class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400">
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-medium mb-1">Name:</label>
+          <input name="name" type="text" required placeholder="Enter your name" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1">CarePass ID (via NFC):</label>
+          <div class="flex space-x-2">
+            <input id="carePassIdInputReg" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400" />
+            <button type="button" id="scanNfcBtnReg" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded text-base">Create CarePass</button>
+      </form>
+    </section>
+
+    <!-- Update -->
+    <section id="update" class="hidden bg-white p-6 rounded-lg shadow fade-section">
+      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
+      <h2 class="text-2xl font-semibold mb-4">📝 Update Your CarePass Record</h2>
+      <form id="updateForm" class="space-y-6">
+        <div class="flex space-x-2">
+          <input id="carePassIdInputUpd" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          <button type="button" id="scanNfcBtnUpd" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Full Name:</label>
+          <input name="fullName" type="text" placeholder="Full Name" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium mb-1">Date of Birth:</label>
+            <input name="dob" type="date" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Gender:</label>
+            <select name="gender" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400">
+              <option value="">Select Gender</option>
+              <option>Male ♂</option>
+              <option>Female ♀</option>
+              <option>Other ⚧</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Blood Group:</label>
+          <select name="bloodGroup" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400">
+            <option value="">Blood Group</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium mb-1">Height (cm):</label>
+            <input id="heightInput" name="height" type="number" placeholder="Height (cm)" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Weight (kg):</label>
+            <input id="weightInput" name="weight" type="number" placeholder="Weight (kg)" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          </div>
+        </div>
+        <p id="bmiResult" class="text-sm text-gray-600"></p>
+
+        <div>
+          <label class="block font-medium mb-1">Blood Pressure (e.g. 120/80):</label>
+          <input id="bpInput" name="bp" type="text" placeholder="Blood Pressure e.g. 120/80" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          <p id="bpWarning" class="text-sm text-red-600 hidden">⚠ Abnormal BP detected!</p>
+        </div>
+
+        <div class="p-3 border border-red-300 rounded bg-red-50">
+          <label class="block font-semibold text-red-600 mb-1">Known Allergies:</label>
+          <div id="allergiesList" class="space-y-2">
+            <input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded" />
+          </div>
+          <button type="button" id="addAllergyBtn" class="mt-2 text-sm text-red-600 underline">+ Add More</button>
+        </div>
+
+        <div class="p-3 border border-red-300 rounded bg-red-50">
+          <label class="block font-semibold text-red-600 mb-1">Current Medications:</label>
+          <div id="medicationsList" class="space-y-2">
+            <input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded" />
+          </div>
+          <button type="button" id="addMedicationBtn" class="mt-2 text-sm text-red-600 underline">+ Add More</button>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Emergency Contact:</label>
+          <input name="emergencyContact" type="text" placeholder="Name & Phone" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-red-400" />
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Medical History:</label>
+          <textarea name="medicalHistory" placeholder="Chronic diseases, conditions..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Treatment History:</label>
+          <textarea name="treatmentHistory" placeholder="Therapies, medications used..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Previous Surgeries:</label>
+          <textarea name="surgeryHistory" placeholder="Surgical history, implants..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-medium mb-1">Insurance Provider:</label>
+          <input name="insuranceProvider" type="text" placeholder="Insurance Provider" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium mb-1">Phone:</label>
+            <input name="phone" type="tel" placeholder="Phone" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          </div>
+          <div>
+            <label class="block font-medium mb-1">Email:</label>
+            <input name="email" type="email" placeholder="Email" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+          </div>
+        </div>
+
+        <div class="flex justify-between space-x-2">
+          <button type="button" id="saveDraftBtn" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white px-4 py-3 rounded text-base">💾 Save Draft</button>
+          <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded text-base">✅ Save to CarePass</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Access -->
+    <section id="access" class="hidden bg-white p-6 rounded-lg shadow fade-section">
+      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
+      <h2 class="text-2xl font-semibold mb-4">🧑‍⚕ Doctor Access</h2>
+      <form id="accessForm" class="space-y-4">
+        <div class="flex space-x-2">
+          <input id="carePassIdInputAcc" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-indigo-400" />
+          <button type="button" id="scanNfcBtnAcc" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded text-base">Access Record</button>
+      </form>
+      <div id="accessResult" class="mt-6 hidden bg-gray-100 p-4 rounded-lg text-sm"></div>
+    </section>
+
+  </main>
+
+  <footer class="text-center text-sm text-gray-500 p-4">CarePass: Your secure key to trusted healthcare.</footer>
+
+  <script>
+    // REPLACE with your Apps Script URL
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwAoX5xew3C4LG9eZLFzEqlb6_e1-j43DDoC03zlPogbCtZz7udTKOFZ_OFu-kZJJ7kIw/exec";
+
+    const loader = document.getElementById("loadingOverlay");
+    const toast = document.getElementById("toast");
+
+    function showLoader() { loader.classList.remove("hidden"); }
+    function hideLoader() { loader.classList.add("hidden"); }
+
+    function showToast(msg, success = true) {
+      toast.textContent = msg;
+      toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 ${success ? "bg-green-600" : "bg-red-600"} text-white`;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 2000);
+    }
+
+    // serialize form -> object (keeps arrays)
+    function formToPairs(form, extra = {}) {
+      const data = new FormData(form);
+      const pairs = {};
+      for (const [key, value] of data.entries()) {
+        if (pairs[key] !== undefined) {
+          if (!Array.isArray(pairs[key])) pairs[key] = [pairs[key]];
+          pairs[key].push(value);
+        } else {
+          pairs[key] = value;
+        }
+      }
+      return { ...pairs, ...extra };
+    }
+
+    // POST to Apps Script (sends arrays correctly)
+    async function postForm(dataObj) {
+      try {
+        showLoader();
+        const body = new URLSearchParams();
+        for (const [k, v] of Object.entries(dataObj)) {
+          if (Array.isArray(v)) v.forEach(x => body.append(k, x));
+          else body.append(k, v);
+        }
+        const res = await fetch(GAS_URL, { method: "POST", body });
+        return await res.json();
+      } catch (err) {
+        console.error("Fetch error:", err);
+        return { ok: false, error: "Network error" };
+      } finally {
+        hideLoader();
+      }
+    }
+
+    // Navigation
+    document.querySelectorAll("[data-target]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-target");
+        document.querySelector("#menu-screen").classList.remove("active");
+        setTimeout(() => {
+          document.querySelector("#menu-screen").classList.add("hidden");
+          document.querySelector("main").classList.remove("hidden");
+          document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+          const section = document.getElementById(target);
+          section.classList.remove("hidden");
+          setTimeout(() => section.classList.add("active"), 20);
+        }, 220);
+      });
+    });
+
+    // Back buttons
+    document.querySelectorAll(".back-btn").forEach(btn => {
+      btn.addEventListener("click", () => goHome());
+    });
+
+    function goHome() {
+      const activeSection = document.querySelector("main section:not(.hidden)");
+      if (activeSection) {
+        activeSection.classList.remove("active");
+        setTimeout(() => {
+          activeSection.classList.add("hidden");
+          document.querySelector("main").classList.add("hidden");
+          document.querySelector("#menu-screen").classList.remove("hidden");
+          setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 20);
+        }, 220);
+      }
+      clearForms();
+    }
+
+    function clearForms() {
+      document.querySelectorAll("form").forEach(f => f.reset());
+      const bmiResult = document.getElementById("bmiResult"); if (bmiResult) bmiResult.textContent = "";
+      const bpWarn = document.getElementById("bpWarning"); if (bpWarn) bpWarn.classList.add("hidden");
+      const allList = document.getElementById("allergiesList");
+      if (allList) allList.innerHTML = `<input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded" />`;
+      const medList = document.getElementById("medicationsList");
+      if (medList) medList.innerHTML = `<input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded" />`;
+      const accessResult = document.getElementById("accessResult"); if (accessResult) accessResult.classList.add("hidden");
+    }
+
+    // NFC simulation
+    function simulateNfcScan(inputEl) {
+      const id = "CP-" + Math.random().toString(36).slice(2, 10).toUpperCase();
+      inputEl.value = id;
+      showToast("Simulated NFC: " + id, true);
+    }
+    document.getElementById("scanNfcBtnReg").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputReg")));
+    document.getElementById("scanNfcBtnUpd").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputUpd")));
+    document.getElementById("scanNfcBtnAcc").addEventListener("click", () => simulateNfcScan(document.getElementById("carePassIdInputAcc")));
+
+    // Register handler (returns home after 1s)
+    document.getElementById("registerForm").onsubmit = async e => {
+      e.preventDefault();
+      const res = await postForm(formToPairs(e.target, { action: "register" }));
+      if (res.ok) {
+        showToast(res.message || "CarePass Created! 🎉", true);
+        e.target.reset();
+        setTimeout(goHome, 1000);
+      } else {
+        showToast(res.error || "Register failed", false);
+      }
+    };
+
+    // Update handler (clear draft & return home after 1s on success)
+    document.getElementById("updateForm").onsubmit = async e => {
+      e.preventDefault();
+      const res = await postForm(formToPairs(e.target, { action: "update" }));
+      if (res.ok) {
+        showToast(res.message || "Record Updated! ✅", true);
+        e.target.reset();
+        try { localStorage.removeItem("draftUpdateForm"); } catch (err) {}
+        setTimeout(goHome, 1000);
+      } else {
+        showToast(res.error || "Update failed", false);
+      }
+    };
+
+    // Doctor access handler (stays on page and shows result)
+    document.getElementById("accessForm").onsubmit = async e => {
+      e.preventDefault();
+      const res = await postForm(formToPairs(e.target, { action: "access" }));
+      const resultDiv = document.getElementById("accessResult");
+      resultDiv.innerHTML = "";
+      if (res.ok) {
+        showToast("Access granted ✅", true);
+        // Format result
+        const data = res.data || {};
+        let html = "<ul class='space-y-1'>";
+        for (const k in data) {
+          if (["Raw"].includes(k)) continue;
+          const label = k.replace(/([A-Z])/g, ' $1').trim();
+          const v = (data[k] === '' || data[k] === null || data[k] === undefined) ? "N/A" : data[k];
+          html += `<li class="py-1"><span class="font-semibold text-gray-700">${label}:</span> ${v}</li>`;
+        }
+        html += "</ul>";
+        resultDiv.innerHTML = html;
+        resultDiv.classList.remove("hidden");
+      } else {
+        showToast(res.error || "Access failed", false);
+        resultDiv.classList.add("hidden");
+      }
+    };
+
+    // BMI & BP
+    const heightInput = document.getElementById("heightInput");
+    const weightInput = document.getElementById("weightInput");
+    const bmiResult = document.getElementById("bmiResult");
+    if (heightInput) heightInput.addEventListener("input", calcBMI);
+    if (weightInput) weightInput.addEventListener("input", calcBMI);
+    function calcBMI() {
+      const h = parseFloat(heightInput.value) / 100;
+      const w = parseFloat(weightInput.value);
+      if (h > 0 && w > 0) bmiResult.textContent = `BMI: ${(w / (h*h)).toFixed(1)}`;
+      else bmiResult.textContent = "";
+    }
+
+    const bpInput = document.getElementById("bpInput");
+    const bpWarning = document.getElementById("bpWarning");
+    if (bpInput) bpInput.addEventListener("input", () => {
+      const m = bpInput.value.match(/(\d+)\s*\/\s*(\d+)/);
+      if (m) {
+        const s = +m[1], d = +m[2];
+        if (s < 90 || s > 140 || d < 60 || d > 90) bpWarning.classList.remove("hidden");
+        else bpWarning.classList.add("hidden");
+      } else bpWarning.classList.add("hidden");
+    });
+
+    // Dynamic fields
+    document.getElementById("addAllergyBtn").onclick = () => {
+      document.getElementById("allergiesList").insertAdjacentHTML("beforeend",
+        `<input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded mt-2" />`);
+    };
+    document.getElementById("addMedicationBtn").onclick = () => {
+      document.getElementById("medicationsList").insertAdjacentHTML("beforeend",
+        `<input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded mt-2" />`);
+    };
+
+    // Save / load draft (update form)
+    document.getElementById("saveDraftBtn").onclick = () => {
+      try {
+        const obj = Object.fromEntries(new FormData(document.getElementById("updateForm")));
+        localStorage.setItem("draftUpdateForm", JSON.stringify(obj));
+        showToast("Draft saved locally ✅", true);
+      } catch (err) {
+        showToast("Draft save failed", false);
+      }
+    };
+
+    window.addEventListener("load", () => {
+      try {
+        const d = localStorage.getItem("draftUpdateForm");
+        if (d) {
+          const obj = JSON.parse(d);
+          Object.entries(obj).forEach(([k, v]) => {
+            const el = document.querySelector(`#updateForm [name="${k}"]`);
+            if (el) el.value = v;
+          });
+          showToast("Draft loaded 📂", true);
+        }
+      } catch (err) {}
+      setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 50);
+    });
+  </script>
+</body>
+</html>

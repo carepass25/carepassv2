@@ -1,424 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CarePass – Your Key to Secure Health Data</title>
-  <link rel="icon" href="assets/IMG_20250822_103325.png" type="image/png" />
+  <meta name="description" content="Secure digital health records with NFC technology for patients and healthcare providers" />
+  <meta name="author" content="CarePass Medical" />
+  <meta name="keywords" content="digital health, medical records, NFC, healthcare, patient data, secure health" />
+  
+  <meta property="og:title" content="CarePass – Your Key to Secure Health Data" />
+  <meta property="og:description" content="Secure digital health records with NFC technology for patients and healthcare providers" />
+  <meta property="og:type" content="website" />
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'medical-blue': '#2563eb',
+            'medical-blue-light': '#dbeafe',
+            'health-green': '#059669',
+            'health-green-light': '#dcfce7',
+            'doctor-purple': '#7c3aed',
+            'doctor-purple-light': '#ede9fe',
+            'emergency-red': '#dc2626',
+            'emergency-red-light': '#fef2f2'
+          },
+          backgroundImage: {
+            'gradient-medical': 'linear-gradient(135deg, #2563eb, #60a5fa)',
+            'gradient-health': 'linear-gradient(135deg, #059669, #34d399)',
+            'gradient-care': 'linear-gradient(135deg, #7c3aed, #a78bfa)',
+            'gradient-bg': 'linear-gradient(180deg, #f8fafc, #f1f5f9)'
+          },
+          boxShadow: {
+            'medical': '0 10px 25px -5px rgba(37, 99, 235, 0.15)',
+            'glow': '0 0 20px rgba(96, 165, 250, 0.3)'
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    /* transitions */
-    .fade-section { opacity: 0; transform: scale(0.95); transition: all 0.4s ease-in-out; }
-    .fade-section.active { opacity: 1; transform: scale(1); }
-    @media (min-width:1024px) { .fade-section { transform: scale(0.92); } .fade-section.active { transform: scale(1.03); } }
-    input, select, textarea, button { font-size: 16px; }
-    pre { white-space: pre-wrap; word-break: break-word; }
+    .fade-section {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fade-section.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .btn-medical {
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      transition: all 0.3s ease;
+    }
+    .btn-medical:hover {
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-health {
+      background: linear-gradient(135deg, #059669, #34d399);
+    }
+    .btn-health:hover {
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-care {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+    }
+    .btn-care:hover {
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+      transform: translateY(-1px);
+    }
+    .medical-card {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .emergency-section {
+      background: linear-gradient(135deg, #fef2f2, #fce7e7);
+      border: 2px solid rgba(220, 38, 38, 0.2);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      ring: 2px;
+      ring-color: #2563eb;
+      ring-opacity: 0.5;
+    }
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   </style>
 </head>
-<body class="bg-gray-50 font-sans min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 font-sans min-h-screen">
 
-  <!-- Loader -->
+  <!-- Loading Overlay -->
   <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center space-y-3">
-      <div class="w-12 h-12 border-4 border-dashed border-blue-600 rounded-full animate-spin"></div>
-      <p class="text-gray-700 font-medium">Processing...</p>
+    <div class="bg-white p-8 rounded-2xl shadow-medical flex flex-col items-center space-y-4">
+      <div class="spinner"></div>
+      <p class="text-gray-700 font-medium text-lg">Processing your request...</p>
     </div>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 text-white"></div>
-
-  <!-- Menu -->
-  <div id="menu-screen" class="max-w-lg mx-auto p-6 space-y-6 fade-section active">
-    <h2 class="text-3xl font-bold text-center mb-4">💙 CarePass 🩺</h2>
-    <div class="grid gap-4">
-      <button data-target="register" class="w-full bg-blue-600 text-white p-5 rounded-xl shadow hover:bg-blue-700 text-lg">🔐 Create CarePass</button>
-      <button data-target="update" class="w-full bg-green-600 text-white p-5 rounded-xl shadow hover:bg-green-700 text-lg">📝 Update Records</button>
-      <button data-target="access" class="w-full bg-indigo-600 text-white p-5 rounded-xl shadow hover:bg-indigo-700 text-lg">🧑‍⚕ Doctor Access</button>
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed top-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 text-white max-w-sm">
+    <div class="flex items-center space-x-3">
+      <div id="toast-icon" class="text-2xl"></div>
+      <div>
+        <div id="toast-title" class="font-semibold"></div>
+        <div id="toast-message" class="text-sm opacity-90"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Main content -->
-  <main id="content" class="max-w-lg mx-auto p-4 sm:p-6 space-y-10 hidden">
+  <!-- Main Menu -->
+  <div id="menu-screen" class="min-h-screen flex items-center justify-center p-4 fade-section active">
+    <div class="medical-card w-full max-w-md p-8">
+      <div class="text-center mb-8">
+        <h1 class="text-5xl font-bold bg-gradient-medical bg-clip-text text-transparent mb-4">
+          💙 CarePass
+        </h1>
+        <p class="text-xl text-gray-600 mb-2">🩺 Your Key to Secure Health Data</p>
+        <p class="text-sm text-gray-500">Professional Healthcare Management System</p>
+      </div>
+      
+      <div class="space-y-4">
+        <button data-target="register" class="btn-medical w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
+          🔐 Create CarePass
+          <div class="text-sm font-normal opacity-90 mt-1">Register as Patient or Doctor</div>
+        </button>
+        
+        <button data-target="update" class="btn-health w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
+          📝 Update Medical Records
+          <div class="text-sm font-normal opacity-90 mt-1">Comprehensive Health Information</div>
+        </button>
+        
+        <button data-target="access" class="btn-care w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
+          🧑‍⚕️ Healthcare Provider Access
+          <div class="text-sm font-normal opacity-90 mt-1">Secure Patient Record Access</div>
+        </button>
+      </div>
+      
+      <div class="mt-8 text-center">
+        <div class="flex items-center justify-center space-x-2 text-sm text-gray-500">
+          <span>🔒</span>
+          <span>End-to-End Encrypted</span>
+          <span>•</span>
+          <span>HIPAA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Register -->
-    <section id="register" class="hidden bg-white p-6 rounded-lg shadow fade-section">
-      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
-      <h2 class="text-2xl font-semibold mb-4">🔐 Create Your CarePass</h2>
-      <form id="registerForm" class="space-y-4">
-        <div>
-          <label class="block font-medium mb-1">Role:</label>
-          <select name="role" required class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400">
-            <option value="patient">Patient</option>
-            <option value="doctor">Doctor</option>
-          </select>
+  <!-- Main Content Container -->
+  <main id="content" class="hidden">
+
+    <!-- Register Section -->
+    <section id="register" class="hidden min-h-screen flex items-center justify-center p-4 fade-section">
+      <div class="medical-card w-full max-w-md">
+        <div class="p-6 border-b border-gray-100">
+          <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+            <span>←</span><span>Back to Menu</span>
+          </button>
+          <h2 class="text-2xl font-bold text-center text-gray-800">🔐 Create Your CarePass</h2>
+          <p class="text-center text-gray-600 mt-2">Join the secure healthcare network</p>
         </div>
-        <div>
-          <label class="block font-medium mb-1">Name:</label>
-          <input name="name" type="text" required placeholder="Enter your name" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400" />
+        
+        <div class="p-6">
+          <form id="registerForm" class="space-y-6">
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">Role:</label>
+              <select name="role" required class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg">
+                <option value="patient">👤 Patient</option>
+                <option value="doctor">🧑‍⚕️ Healthcare Provider</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">Full Name:</label>
+              <input name="name" type="text" required placeholder="Enter your full name" 
+                     class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
+            </div>
+            
+            <div>
+              <label class="block font-semibold mb-2 text-gray-700">CarePass ID (NFC Security):</label>
+              <div class="flex space-x-3">
+                <input id="carePassIdInputReg" name="carePassId" type="password" required 
+                       placeholder="Tap NFC card or enter secure ID" 
+                       class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
+                <button type="button" id="scanNfcBtnReg" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
+                  📡 NFC
+                </button>
+              </div>
+              <p class="text-sm text-gray-500 mt-2">🔒 Your secure healthcare identifier</p>
+            </div>
+            
+            <button type="submit" class="btn-medical w-full text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+              Create Secure CarePass
+            </button>
+          </form>
         </div>
-        <div>
-          <label class="block font-medium mb-1">CarePass ID (via NFC):</label>
-          <div class="flex space-x-2">
-            <input id="carePassIdInputReg" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-400" />
-            <button type="button" id="scanNfcBtnReg" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
-          </div>
-        </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded text-base">Create CarePass</button>
-      </form>
+      </div>
     </section>
 
-    <!-- Update -->
-    <section id="update" class="hidden bg-white p-6 rounded-lg shadow fade-section">
-      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
-      <h2 class="text-2xl font-semibold mb-4">📝 Update Your CarePass Record</h2>
-      <form id="updateForm" class="space-y-6">
-        <div class="flex space-x-2">
-          <input id="carePassIdInputUpd" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          <button type="button" id="scanNfcBtnUpd" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Full Name:</label>
-          <input name="fullName" type="text" placeholder="Full Name" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block font-medium mb-1">Date of Birth:</label>
-            <input name="dob" type="date" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
+    <!-- Update Section -->
+    <section id="update" class="hidden min-h-screen p-4 fade-section">
+      <div class="max-w-4xl mx-auto">
+        <div class="medical-card">
+          <div class="p-6 border-b border-gray-100">
+            <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+              <span>←</span><span>Back to Menu</span>
+            </button>
+            <h2 class="text-3xl font-bold text-center text-gray-800">📝 Update Medical Records</h2>
+            <p class="text-center text-gray-600 mt-2">Comprehensive Health Information Management</p>
           </div>
-          <div>
-            <label class="block font-medium mb-1">Gender:</label>
-            <select name="gender" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400">
-              <option value="">Select Gender</option>
-              <option>Male ♂</option>
-              <option>Female ♀</option>
-              <option>Other ⚧</option>
-            </select>
+          
+          <div class="p-6">
+            <form id="updateForm" class="space-y-8">
+              <!-- NFC Scanner -->
+              <div class="bg-medical-blue-light p-6 rounded-xl">
+                <label class="block font-semibold mb-3 text-gray-800">🔐 CarePass Authentication:</label>
+                <div class="flex space-x-3">
+                  <input id="carePassIdInputUpd" name="carePassId" type="password" required 
+                         placeholder="Tap NFC card or enter your CarePass ID" 
+                         class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
+                  <button type="button" id="scanNfcBtnUpd" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
+                    📡 Scan NFC
+                  </button>
+                </div>
+              </div>
+
+              <!-- Personal Information -->
+              <div class="space-y-6">
+                <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">👤 Personal Information</h3>
+                
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Full Legal Name:</label>
+                  <input name="fullName" type="text" placeholder="Full Legal Name" 
+                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Date of Birth:</label>
+                    <input name="dob" type="date" 
+                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  </div>
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Gender:</label>
+                    <select name="gender" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg">
+                      <option value="">Select Gender</option>
+                      <option value="Male ♂">Male ♂</option>
+                      <option value="Female ♀">Female ♀</option>
+                      <option value="Other ⚧">Other ⚧</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Blood Group:</label>
+                  <select name="bloodGroup" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-emergency-red transition-colors text-lg">
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+ (A Positive)</option>
+                    <option value="A-">A- (A Negative)</option>
+                    <option value="B+">B+ (B Positive)</option>
+                    <option value="B-">B- (B Negative)</option>
+                    <option value="O+">O+ (O Positive)</option>
+                    <option value="O-">O- (O Negative)</option>
+                    <option value="AB+">AB+ (AB Positive)</option>
+                    <option value="AB-">AB- (AB Negative)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Vital Signs -->
+              <div class="space-y-6">
+                <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">🩺 Vital Signs & Measurements</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Height (cm):</label>
+                    <input id="heightInput" name="height" type="number" placeholder="Height in centimeters" 
+                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  </div>
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Weight (kg):</label>
+                    <input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" 
+                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  </div>
+                </div>
+                <div id="bmiResult" class="text-lg font-semibold text-health-green bg-health-green-light p-3 rounded-lg hidden"></div>
+
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Blood Pressure (e.g., 120/80):</label>
+                  <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" 
+                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  <div id="bpWarning" class="hidden bg-emergency-red-light border border-emergency-red text-emergency-red p-3 rounded-lg mt-3">
+                    <div class="flex items-center space-x-2">
+                      <span class="text-xl">⚠️</span>
+                      <span class="font-semibold">Abnormal blood pressure detected! Please consult your healthcare provider.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Critical Medical Information -->
+              <div class="emergency-section p-6 rounded-xl">
+                <h3 class="text-xl font-bold text-emergency-red mb-4 flex items-center space-x-2">
+                  <span>🚨</span><span>Critical Medical Information</span>
+                </h3>
+                
+                <div class="space-y-6">
+                  <div>
+                    <label class="block font-bold mb-3 text-emergency-red">Known Allergies:</label>
+                    <div id="allergiesList" class="space-y-3">
+                      <input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" 
+                             class="w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors" />
+                    </div>
+                    <button type="button" id="addAllergyBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
+                      + Add Another Allergy
+                    </button>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold mb-3 text-emergency-red">Current Medications:</label>
+                    <div id="medicationsList" class="space-y-3">
+                      <input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" 
+                             class="w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors" />
+                    </div>
+                    <button type="button" id="addMedicationBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
+                      + Add Another Medication
+                    </button>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold mb-2 text-emergency-red">Emergency Contact:</label>
+                    <input name="emergencyContact" type="text" placeholder="Name & Phone Number" 
+                           class="w-full border-2 border-emergency-red p-4 rounded-lg focus:border-red-600 transition-colors text-lg" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Medical History -->
+              <div class="space-y-6">
+                <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📋 Medical History</h3>
+                
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Medical History & Chronic Conditions:</label>
+                  <textarea name="medicalHistory" rows="4" placeholder="List chronic diseases, ongoing conditions, genetic predispositions..." 
+                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                </div>
+
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Treatment History:</label>
+                  <textarea name="treatmentHistory" rows="4" placeholder="Previous treatments, therapies, rehabilitation..." 
+                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                </div>
+
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Surgical History:</label>
+                  <textarea name="surgeryHistory" rows="4" placeholder="Previous surgeries, procedures, implants, dates..." 
+                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                </div>
+              </div>
+
+              <!-- Contact & Insurance -->
+              <div class="space-y-6">
+                <h3 class="text-xl font-bold text-gray-800 border-b border-gray-200 pb-2">📞 Contact & Insurance Information</h3>
+                
+                <div>
+                  <label class="block font-semibold mb-2 text-gray-700">Insurance Provider:</label>
+                  <input name="insuranceProvider" type="text" placeholder="Insurance Company Name & Policy Number" 
+                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Phone Number:</label>
+                    <input name="phone" type="tel" placeholder="Primary Phone Number" 
+                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  </div>
+                  <div>
+                    <label class="block font-semibold mb-2 text-gray-700">Email Address:</label>
+                    <input name="email" type="email" placeholder="Email Address" 
+                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4 pt-6">
+                <button type="button" id="saveDraftBtn" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
+                  💾 Save Draft Locally
+                </button>
+                <button type="submit" class="flex-1 btn-health text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+                  ✅ Update CarePass Record
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <div>
-          <label class="block font-medium mb-1">Blood Group:</label>
-          <select name="bloodGroup" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400">
-            <option value="">Blood Group</option>
-            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block font-medium mb-1">Height (cm):</label>
-            <input id="heightInput" name="height" type="number" placeholder="Height (cm)" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          </div>
-          <div>
-            <label class="block font-medium mb-1">Weight (kg):</label>
-            <input id="weightInput" name="weight" type="number" placeholder="Weight (kg)" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          </div>
-        </div>
-        <p id="bmiResult" class="text-sm text-gray-600"></p>
-
-        <div>
-          <label class="block font-medium mb-1">Blood Pressure (e.g. 120/80):</label>
-          <input id="bpInput" name="bp" type="text" placeholder="Blood Pressure e.g. 120/80" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          <p id="bpWarning" class="text-sm text-red-600 hidden">⚠ Abnormal BP detected!</p>
-        </div>
-
-        <div class="p-3 border border-red-300 rounded bg-red-50">
-          <label class="block font-semibold text-red-600 mb-1">Known Allergies:</label>
-          <div id="allergiesList" class="space-y-2">
-            <input name="allergies[]" type="text" placeholder="e.g. Penicillin" class="w-full border border-gray-300 p-2 rounded" />
-          </div>
-          <button type="button" id="addAllergyBtn" class="mt-2 text-sm text-red-600 underline">+ Add More</button>
-        </div>
-
-        <div class="p-3 border border-red-300 rounded bg-red-50">
-          <label class="block font-semibold text-red-600 mb-1">Current Medications:</label>
-          <div id="medicationsList" class="space-y-2">
-            <input name="medications[]" type="text" placeholder="e.g. Metformin 500mg daily" class="w-full border border-gray-300 p-2 rounded" />
-          </div>
-          <button type="button" id="addMedicationBtn" class="mt-2 text-sm text-red-600 underline">+ Add More</button>
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Emergency Contact:</label>
-          <input name="emergencyContact" type="text" placeholder="Name & Phone" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-red-400" />
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Medical History:</label>
-          <textarea name="medicalHistory" placeholder="Chronic diseases, conditions..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Treatment History:</label>
-          <textarea name="treatmentHistory" placeholder="Therapies, medications used..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Previous Surgeries:</label>
-          <textarea name="surgeryHistory" placeholder="Surgical history, implants..." class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400"></textarea>
-        </div>
-
-        <div>
-          <label class="block font-medium mb-1">Insurance Provider:</label>
-          <input name="insuranceProvider" type="text" placeholder="Insurance Provider" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block font-medium mb-1">Phone:</label>
-            <input name="phone" type="tel" placeholder="Phone" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          </div>
-          <div>
-            <label class="block font-medium mb-1">Email:</label>
-            <input name="email" type="email" placeholder="Email" class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-green-400" />
-          </div>
-        </div>
-
-        <div class="flex justify-between space-x-2">
-          <button type="button" id="saveDraftBtn" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white px-4 py-3 rounded text-base">💾 Save Draft</button>
-          <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded text-base">✅ Save to CarePass</button>
-        </div>
-      </form>
+      </div>
     </section>
 
-    <!-- Access -->
-    <section id="access" class="hidden bg-white p-6 rounded-lg shadow fade-section">
-      <button class="back-btn text-sm text-blue-600 underline mb-4">← Back to Menu</button>
-      <h2 class="text-2xl font-semibold mb-4">🧑‍⚕ Doctor Access</h2>
-      <form id="accessForm" class="space-y-4">
-        <div class="flex space-x-2">
-          <input id="carePassIdInputAcc" name="carePassId" type="password" required placeholder="Tap NFC card" class="flex-1 border border-gray-300 p-3 rounded focus:ring-2 focus:ring-indigo-400" />
-          <button type="button" id="scanNfcBtnAcc" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">📡 Scan NFC</button>
+    <!-- Access Section -->
+    <section id="access" class="hidden min-h-screen p-4 fade-section">
+      <div class="max-w-6xl mx-auto">
+        <div class="medical-card">
+          <div class="p-6 border-b border-gray-100">
+            <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+              <span>←</span><span>Back to Menu</span>
+            </button>
+            <h2 class="text-3xl font-bold text-center text-gray-800">🧑‍⚕️ Healthcare Provider Access</h2>
+            <p class="text-center text-gray-600 mt-2">Secure Patient Record Access Portal</p>
+          </div>
+          
+          <div class="p-6">
+            <form id="accessForm" class="space-y-6 mb-8">
+              <div class="bg-doctor-purple-light p-6 rounded-xl">
+                <label class="block font-semibold mb-3 text-gray-800">🔐 Patient CarePass ID:</label>
+                <div class="flex space-x-3">
+                  <input id="carePassIdInputAcc" name="carePassId" type="password" required 
+                         placeholder="Scan patient's NFC card or enter CarePass ID" 
+                         class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-doctor-purple transition-colors text-lg" />
+                  <button type="button" id="scanNfcBtnAcc" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
+                    📡 Scan NFC
+                  </button>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">🔒 Healthcare provider authentication required</p>
+              </div>
+              
+              <button type="submit" class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+                🔍 Access Patient Record
+              </button>
+            </form>
+
+            <!-- Patient Record Display -->
+            <div id="accessResult" class="hidden">
+              <div class="bg-gradient-medical text-white p-6 rounded-xl mb-6 text-center">
+                <h3 class="text-2xl font-bold mb-2">📋 Patient Medical Record</h3>
+                <p class="opacity-90">Confidential Healthcare Information</p>
+                <div class="bg-white/20 p-3 rounded-lg mt-4">
+                  <p class="text-sm">⚠️ This information is protected under HIPAA regulations</p>
+                </div>
+              </div>
+              
+              <div id="patientData" class="space-y-6"></div>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded text-base">Access Record</button>
-      </form>
-      <div id="accessResult" class="mt-6 hidden bg-gray-100 p-4 rounded-lg text-sm"></div>
+      </div>
     </section>
 
   </main>
 
-  <footer class="text-center text-sm text-gray-500 p-4">CarePass: Your secure key to trusted healthcare.</footer>
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-500 p-6 bg-white/50">
+    <div class="max-w-2xl mx-auto">
+      <p class="font-semibold text-gray-700 mb-2">🏥 CarePass: Your secure key to trusted healthcare.</p>
+      <p class="text-xs">Professional Healthcare Data Management • HIPAA Compliant • End-to-End Encrypted</p>
+    </div>
+  </footer>
 
   <script>
-  // Backend endpoint
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbyRNMVCTa5E_KfHRcTw_d4KHcw1SbY5FVi-9ioSZN62DRHn0AJAZRSvBgflF_S2ZH_r/exec";
+    // Configuration
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyRNMVCTa5E_KfHRcTw_d4KHcw1SbY5FVi-9ioSZN62DRHn0AJAZRSvBGmhRItHSXrcJcfuUc/exec";
 
-  const loader = document.getElementById("loadingOverlay");
-  const toast = document.getElementById("toast");
+    // UI Elements
+    const loader = document.getElementById("loadingOverlay");
+    const toast = document.getElementById("toast");
+    const toastIcon = document.getElementById("toast-icon");
+    const toastTitle = document.getElementById("toast-title");
+    const toastMessage = document.getElementById("toast-message");
 
-  function showLoader() { loader.classList.remove("hidden"); }
-  function hideLoader() { loader.classList.add("hidden"); }
-
-  function showToast(msg, success = true) {
-    toast.textContent = msg;
-    toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow z-50 ${success ? "bg-green-600" : "bg-red-600"} text-white`;
-    toast.classList.remove("hidden");
-    setTimeout(() => toast.classList.add("hidden"), 2500);
-  }
-
-  // Serialize form
-  function formToPairs(form, extra = {}) {
-    const data = new FormData(form);
-    const pairs = {};
-    for (const [key, value] of data.entries()) {
-      if (pairs[key] !== undefined) {
-        if (!Array.isArray(pairs[key])) pairs[key] = [pairs[key]];
-        pairs[key].push(value);
-      } else {
-        pairs[key] = value;
-      }
+    // Utility Functions
+    function showLoader() {
+      loader.classList.remove("hidden");
     }
-    return { ...pairs, ...extra };
-  }
 
-  // POST helper
-  async function postForm(dataObj) {
-    try {
-      showLoader();
-      const body = new URLSearchParams();
-      for (const [k, v] of Object.entries(dataObj)) {
-        if (Array.isArray(v)) v.forEach(x => body.append(k, x));
-        else body.append(k, v);
-      }
-      const res = await fetch(GAS_URL, { method: "POST", body });
-      return await res.json();
-    } catch (err) {
-      console.error("Fetch error:", err);
-      return { ok: false, error: "Network error" };
-    } finally {
-      hideLoader();
+    function hideLoader() {
+      loader.classList.add("hidden");
     }
-  }
 
-  // Navigation
-  document.querySelectorAll("[data-target]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-target");
-      document.querySelector("#menu-screen").classList.remove("active");
+    function showToast(title, message, type = 'success') {
+      const colors = {
+        success: 'bg-health-green',
+        error: 'bg-emergency-red',
+        warning: 'bg-yellow-500',
+        info: 'bg-medical-blue'
+      };
+      
+      const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+      };
+
+      toastIcon.textContent = icons[type];
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+      toast.className = `fixed top-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 text-white max-w-sm ${colors[type]}`;
+      toast.classList.remove("hidden");
+      
       setTimeout(() => {
-        document.querySelector("#menu-screen").classList.add("hidden");
-        document.querySelector("main").classList.remove("hidden");
-        document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
-        const section = document.getElementById(target);
-        section.classList.remove("hidden");
-        setTimeout(() => section.classList.add("active"), 20);
-      }, 220);
-    });
-  });
-
-  // Back to menu
-  document.querySelectorAll(".back-btn").forEach(btn => {
-    btn.addEventListener("click", () => goHome());
-  });
-  function goHome() {
-    const activeSection = document.querySelector("main section:not(.hidden)");
-    if (activeSection) {
-      activeSection.classList.remove("active");
-      setTimeout(() => {
-        activeSection.classList.add("hidden");
-        document.querySelector("main").classList.add("hidden");
-        document.querySelector("#menu-screen").classList.remove("hidden");
-        setTimeout(() => document.querySelector("#menu-screen").classList.add("active"), 20);
-      }, 220);
+        toast.classList.add("hidden");
+      }, 4000);
     }
-    clearForms();
-  }
 
-  function clearForms() {
-    document.querySelectorAll("form").forEach(f => f.reset());
-    if (document.getElementById("bmiResult")) document.getElementById("bmiResult").textContent = "";
-    if (document.getElementById("bpWarning")) document.getElementById("bpWarning").classList.add("hidden");
-  }
-
-  // ✅ Web NFC support
-  async function scanNfc(targetInputId) {
-    if ("NDEFReader" in window) {
-      try {
-        const ndef = new NDEFReader();
-        await ndef.scan();
-        showToast("📡 Hold your NFC card near the phone...");
-        ndef.onreading = event => {
-          const decoder = new TextDecoder();
-          let nfcId = "";
-          for (const record of event.message.records) {
-            nfcId += decoder.decode(record.data);
+    // Form serialization helper
+    function formToPairs(form, extra = {}) {
+      const data = new FormData(form);
+      const pairs = {};
+      
+      for (const [key, value] of data.entries()) {
+        if (pairs[key] !== undefined) {
+          if (!Array.isArray(pairs[key])) {
+            pairs[key] = [pairs[key]];
           }
-          document.getElementById(targetInputId).value =
-            nfcId || "CP-" + Math.floor(100000 + Math.random() * 900000);
-          showToast("✅ NFC Card read successfully");
-        };
-      } catch (error) {
-        console.error("NFC Scan failed:", error);
-        showToast("❌ NFC scan error: " + error.message, false);
+          pairs[key].push(value);
+        } else {
+          pairs[key] = value;
+        }
       }
-    } else {
-      showToast("⚠️ Web NFC not supported on this device", false);
+      
+      return { ...pairs, ...extra };
     }
-  }
 
-  // Bind NFC buttons
-  document.getElementById("scanNfcBtnReg").addEventListener("click", () => scanNfc("carePassIdInputReg"));
-  document.getElementById("scanNfcBtnUpd").addEventListener("click", () => scanNfc("carePassIdInputUpd"));
-  document.getElementById("scanNfcBtnAcc").addEventListener("click", () => scanNfc("carePassIdInputAcc"));
-
-  // BMI calculation
-  ["heightInput","weightInput"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener("input", () => {
-      const h = parseFloat(document.getElementById("heightInput").value);
-      const w = parseFloat(document.getElementById("weightInput").value);
-      if (h && w) {
-        const bmi = (w / ((h/100) ** 2)).toFixed(1);
-        let status = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal" : bmi < 30 ? "Overweight" : "Obese";
-        document.getElementById("bmiResult").textContent = `BMI: ${bmi} (${status})`;
-      }
-    });
-  });
-
-  // BP warning
-  document.getElementById("bpInput").addEventListener("input", e => {
-    const txt = e.target.value.trim();
-    const warn = document.getElementById("bpWarning");
-    if (/^\d{2,3}\/\d{2,3}$/.test(txt)) {
-      const [s, d] = txt.split("/").map(Number);
-      warn.classList.toggle("hidden", !(s > 140 || d > 90));
-    } else {
-      warn.classList.add("hidden");
-    }
-  });
-
-  // Add allergy/medication fields
-  document.getElementById("addAllergyBtn").addEventListener("click", () => {
-    const div = document.createElement("div");
-    div.innerHTML = `<input name="allergies[]" type="text" placeholder="e.g. Dust" class="w-full border border-gray-300 p-2 rounded" />`;
-    document.getElementById("allergiesList").appendChild(div);
-  });
-  document.getElementById("addMedicationBtn").addEventListener("click", () => {
-    const div = document.createElement("div");
-    div.innerHTML = `<input name="medications[]" type="text" placeholder="e.g. Paracetamol 500mg" class="w-full border border-gray-300 p-2 rounded" />`;
-    document.getElementById("medicationsList").appendChild(div);
-  });
-
-  // Register
-  document.getElementById("registerForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const data = formToPairs(e.target, { action: "register" });
-    const res = await postForm(data);
-    showToast(res.ok ? "✅ CarePass created" : "❌ Error: " + res.error, res.ok);
-    if (res.ok) goHome();
-  });
-
-  // Update
-  document.getElementById("updateForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const data = formToPairs(e.target, { action: "update" });
-    const res = await postForm(data);
-    showToast(res.ok ? "✅ Record updated" : "❌ Error: " + res.error, res.ok);
-    if (res.ok) goHome();
-  });
-
-  // Save Draft (localStorage)
-  document.getElementById("saveDraftBtn").addEventListener("click", () => {
-    const data = formToPairs(document.getElementById("updateForm"));
-    localStorage.setItem("carepassDraft", JSON.stringify(data));
-    showToast("💾 Draft saved locally");
-  });
-  window.addEventListener("load", () => {
-    const draft = localStorage.getItem("carepassDraft");
-    if (draft) {
+    // API helper
+    async function postForm(dataObj) {
       try {
-        const obj = JSON.parse(draft);
-        Object.keys(obj).forEach(k => {
-          const els = document.querySelectorAll(`[name='${k}']`);
-          if (els.length) {
-            if (Array.isArray(obj[k])) obj[k].forEach((val,i) => els[i]?.value = val);
-            else els[0].value = obj[k];
+        showLoader();
+        const body = new URLSearchParams();
+        
+        for (const [key, value] of Object.entries(dataObj)) {
+          if (Array.isArray(value)) {
+            value.forEach(item => {
+              if (item && item.trim()) {
+                body.append(key, item.trim());
+              }
+            });
+          } else if (value) {
+            body.append(key, value);
+          }
+        }
+        
+        const response = await fetch(GAS_URL, {
+          method: "POST",
+          body: body,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
           }
         });
-      } catch {}
+        
+        return await response.json();
+      } catch (error) {
+        console.error("API Error:", error);
+        return { ok: false, error: "Network connection error. Please check your internet connection." };
+      } finally {
+        hideLoader();
+      }
     }
-  });
 
-  // Doctor Access
-  document.getElementById("accessForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const data = formToPairs(e.target, { action: "access" });
-    const res = await postForm(data);
-    const resultDiv = document.getElementById("accessResult");
-    resultDiv.classList.remove("hidden");
-    if (res.ok && res.record) {
-      resultDiv.innerHTML = `<h3 class="font-bold mb-2">Patient Record:</h3><pre>${JSON.stringify(res.record, null, 2)}</pre>`;
-      showToast("✅ Record retrieved");
-    } else {
-      resultDiv.textContent = "❌ " + (res.error || "Not found");
-      showToast("❌ Error: " + (res.error || "Not found"), false);
+    // Navigation System
+    document.querySelectorAll("[data-target]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-target");
+        navigateToSection(target);
+      });
+    });
+
+    document.querySelectorAll(".back-btn").forEach(btn => {
+      btn.addEventListener("click", () => navigateToMenu());
+    });
+
+    function navigateToSection(target) {
+      const menuScreen = document.querySelector("#menu-screen");
+      const content = document.querySelector("main");
+      const targetSection = document.getElementById(target);
+
+      menuScreen.classList.remove("active");
+      setTimeout(() => {
+        menuScreen.classList.add("hidden");
+        content.classList.remove("hidden");
+        
+        document.querySelectorAll("main section").forEach(s => {
+          s.classList.add("hidden");
+          s.classList.remove("active");
+        });
+        
+        targetSection.classList.remove("hidden");
+        setTimeout(() => targetSection.classList.add("active"), 50);
+      }, 200);
     }
-  });
-</script>
 
+    function navigateToMenu() {
+      const activeSection = document.querySelector("main section:not(.hidden)");
+      const menuScreen = document.querySelector("#menu-screen");
+      const content = document.querySelector("main");
+
+      if (activeSection) {
+        activeSection.classList.remove("active");
+        setTimeout(() => {
+          activeSection.classList.add("hidden");
+          content.classList.add("hidden");
+          menuScreen.classList.remove("hidden");
+          setTimeout(() => menuScreen.classList.add("active"), 50);
+        }, 200);
+      }
+      
+      clearForms();
+    }
+
+    function clearForms() {
+      document.querySelectorAll("form").forEach(form => form.reset());
+      document.getElementById("bmiResult")?.classList.add("hidden");
+      document.getElementById("bpWarning")?.classList.add("hidden");
+      document.getElementById("accessResult")?.classList.add("hidden");
+    }
+
+    // NFC Functionality
+    async function scanNFC(targetInputId) {
+      if ("NDEFReader" in window) {
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          
+          showToast("NFC Ready", "Hold your NFC card near the device...", "info");
+          
+          ndef.onreading = (event) => {
+            const decoder = new TextDecoder();
+            let nfcId = "";
+            
+            for (const record of event.message.records) {
+              nfcId += decoder.decode(record.data);
+            }
+            
+            const finalId = nfcId || `CP-${Math.floor(100000 + Math.random() * 900000)}`;
+            document.getElementById(targetInputId).value = finalId;
+            showToast("NFC Success", "CarePass ID read successfully!", "success");
+          };
+
+          ndef.onerror = () => {
+            showToast("NFC Error", "Failed to read NFC card. Please try again.", "error");
+          };
+
+        } catch (error) {
+          console.error("NFC Error:", error);
+          showToast("NFC Error", `NFC scan failed: ${error.message}`, "error");
+        }
+      } else {
+        // Fallback for devices without NFC
+        const fallbackId = `CP-${Math.floor(100000 + Math.random() * 900000)}`;
+        document.getElementById(targetInputId).value = fallbackId;
+        showToast("NFC Not Supported", "Generated secure ID instead", "warning");
+      }
+    }
+
+    // Bind NFC buttons
+    document.getElementById("scanNfcBtnReg").addEventListener("click", () => scanNFC("carePassIdInputReg"));
+    document.getElementById("scanNfcBtnUpd").addEventListener("click", () => scanNFC("carePassIdInputUpd"));
+    document.getElementById("scanNfcBtnAcc").addEventListener("click", () => scanNFC("carePassIdInputAcc"));
+
+    // BMI Calculation
+    function calculateBMI() {
+      const height = parseFloat(document.getElementById("heightInput").value);
+      const weight = parseFloat(document.getElementById("weightInput").value);
+      const bmiResult = document.getElementById("bmiResult");
+
+      if (height && weight && height > 0 && weight > 0) {
+        const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
+        let category = "";
+        let colorClass = "";
+
+        if (bmi < 18.5) {
+          category = "Underweight";
+          colorClass = "text-blue-600 bg-blue-50";
+        } else if (bmi < 25) {
+          category = "Normal Weight";
+          colorClass = "text-health-green bg-health-green-light";
+        } else if (bmi < 30) {
+          category = "Overweight";
+          colorClass = "text-yellow-600 bg-yellow-50";
+        } else {
+          category = "Obese";
+          colorClass = "text-emergency-red bg-emergency-red-light";
+        }
+
+        bmiResult.textContent = `BMI: ${bmi} (${category})`;
+        bmiResult.className = `text-lg font-semibold p-3 rounded-lg ${colorClass}`;
+        bmiResult.classList.remove("hidden");
+      } else {
+        bmiResult.classList.add("hidden");
+      }
+    }
+
+    document.getElementById("heightInput").addEventListener("input", calculateBMI);
+    document.getElementById("weightInput").addEventListener("input", calculateBMI);
+
+    // Blood Pressure Warning
+    document.getElementById("bpInput").addEventListener("input", (e) => {
+      const bpValue = e.target.value.trim();
+      const bpWarning = document.getElementById("bpWarning");
+      
+      if (/^\d{2,3}\/\d{2,3}$/.test(bpValue)) {
+        const [systolic, diastolic] = bpValue.split("/").map(Number);
+        
+        if (systolic > 140 || diastolic > 90 || systolic < 90 || diastolic < 60) {
+          bpWarning.classList.remove("hidden");
+        } else {
+          bpWarning.classList.add("hidden");
+        }
+      } else {
+        bpWarning.classList.add("hidden");
+      }
+    });
+
+    // Dynamic field addition
+    document.getElementById("addAllergyBtn").addEventListener("click", () => {
+      const container = document.getElementById("allergiesList");
+      const input = document.createElement("input");
+      input.name = "allergies[]";
+      input.type = "text";
+      input.placeholder = "e.g., Dust, Pollen, Medication name";
+      input.className = "w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors";
+      container.appendChild(input);
+    });
+
+    document.getElementById("addMedicationBtn").addEventListener("click", () => {
+      const container = document.getElementById("medicationsList");
+      const input = document.createElement("input");
+      input.name = "medications[]";
+      input.type = "text";
+      input.placeholder = "e.g., Aspirin 81mg daily, Insulin 10 units before meals";
+      input.className = "w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors";
+      container.appendChild(input);
+    });
+
+    // Form Handlers
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = formToPairs(e.target, { action: "register" });
+      
+      if (!data.name || !data.carePassId) {
+        showToast("Validation Error", "Please fill in all required fields", "error");
+        return;
+      }
+      
+      const result = await postForm(data);
+      
+      if (result.ok) {
+        showToast("Registration Success", "Your CarePass has been created successfully!", "success");
+        setTimeout(() => navigateToMenu(), 2000);
+      } else {
+        showToast("Registration Failed", result.error || "Could not create CarePass", "error");
+      }
+    });
+
+    document.getElementById("updateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = formToPairs(e.target, { action: "update" });
+      
+      if (!data.carePassId) {
+        showToast("Validation Error", "Please enter your CarePass ID", "error");
+        return;
+      }
+      
+      const result = await postForm(data);
+      
+      if (result.ok) {
+        showToast("Update Success", "Your medical record has been updated successfully!", "success");
+        localStorage.removeItem("carepassDraft");
+        setTimeout(() => navigateToMenu(), 2000);
+      } else {
+        showToast("Update Failed", result.error || "Could not update record", "error");
+      }
+    });
+
+    document.getElementById("saveDraftBtn").addEventListener("click", () => {
+      const form = document.getElementById("updateForm");
+      const data = formToPairs(form);
+      localStorage.setItem("carepassDraft", JSON.stringify(data));
+      showToast("Draft Saved", "Your information has been saved locally", "success");
+    });
+
+    // Load draft on page load
+    window.addEventListener("load", () => {
+      const draft = localStorage.getItem("carepassDraft");
+      if (draft) {
+        try {
+          const draftData = JSON.parse(draft);
+          Object.entries(draftData).forEach(([key, value]) => {
+            const elements = document.querySelectorAll(`[name='${key}']`);
+            if (elements.length) {
+              if (Array.isArray(value)) {
+                value.forEach((val, index) => {
+                  if (elements[index]) {
+                    elements[index].value = val;
+                  }
+                });
+              } else {
+                elements[0].value = value;
+              }
+            }
+          });
+          showToast("Draft Loaded", "Your saved information has been restored", "info");
+        } catch (error) {
+          console.error("Failed to load draft:", error);
+        }
+      }
+    });
+
+    // Doctor Access Form
+    document.getElementById("accessForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = formToPairs(e.target, { action: "access" });
+      
+      if (!data.carePassId) {
+        showToast("Validation Error", "Please enter the patient's CarePass ID", "error");
+        return;
+      }
+      
+      const result = await postForm(data);
+      const resultDiv = document.getElementById("accessResult");
+      
+      resultDiv.classList.remove("hidden");
+      
+      if (result.ok && result.record) {
+        displayPatientRecord(result.record);
+        showToast("Access Granted", "Patient record retrieved successfully", "success");
+      } else {
+        document.getElementById("patientData").innerHTML = `
+          <div class="bg-emergency-red-light border border-emergency-red text-emergency-red p-6 rounded-xl text-center">
+            <div class="text-4xl mb-4">❌</div>
+            <h4 class="text-xl font-bold mb-2">Access Denied</h4>
+            <p>${result.error || "Patient record not found"}</p>
+          </div>
+        `;
+        showToast("Access Failed", result.error || "Patient record not found", "error");
+      }
+    });
+
+    function displayPatientRecord(record) {
+      const patientData = document.getElementById("patientData");
+      
+      const formatField = (value) => value || "Not provided";
+      const formatArrayField = (value) => {
+        if (!value) return "None recorded";
+        if (typeof value === 'string') return value;
+        if (Array.isArray(value)) return value.join(", ") || "None recorded";
+        return "None recorded";
+      };
+
+      patientData.innerHTML = `
+        <!-- Patient Identity -->
+        <div class="medical-card border-l-4 border-medical-blue">
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-medical-blue mb-4 flex items-center">
+              <span class="text-2xl mr-2">👤</span> Patient Identity
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Full Name</label>
+                <p class="text-lg font-medium">${formatField(record.fullName || record.name)}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Date of Birth</label>
+                <p class="text-lg font-medium">${formatField(record.dob)}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Gender</label>
+                <p class="text-lg font-medium">${formatField(record.gender)}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Blood Group</label>
+                <p class="text-lg font-bold text-emergency-red">${formatField(record.bloodGroup)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Critical Information -->
+        <div class="emergency-section border-l-4 border-emergency-red">
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-emergency-red mb-4 flex items-center">
+              <span class="text-2xl mr-2">🚨</span> Critical Medical Information
+            </h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-bold text-emergency-red mb-2">Known Allergies</label>
+                <div class="bg-white border border-emergency-red rounded-lg p-4">
+                  <p class="font-medium">${formatArrayField(record.allergies)}</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-emergency-red mb-2">Current Medications</label>
+                <div class="bg-white border border-emergency-red rounded-lg p-4">
+                  <p class="font-medium">${formatArrayField(record.medications)}</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-emergency-red mb-2">Emergency Contact</label>
+                <div class="bg-white border border-emergency-red rounded-lg p-4 flex items-center">
+                  <span class="text-xl mr-3">📞</span>
+                  <p class="font-medium">${formatField(record.emergencyContact)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vital Signs -->
+        <div class="medical-card border-l-4 border-health-green">
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-health-green mb-4 flex items-center">
+              <span class="text-2xl mr-2">🩺</span> Vital Signs & Measurements
+            </h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div class="text-center p-4 bg-health-green-light rounded-lg">
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Height</label>
+                <p class="text-2xl font-bold text-health-green">${record.height ? record.height + ' cm' : 'N/A'}</p>
+              </div>
+              <div class="text-center p-4 bg-health-green-light rounded-lg">
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Weight</label>
+                <p class="text-2xl font-bold text-health-green">${record.weight ? record.weight + ' kg' : 'N/A'}</p>
+              </div>
+              <div class="text-center p-4 bg-health-green-light rounded-lg">
+                <label class="block text-sm font-semibold text-gray-600 mb-1">BMI</label>
+                <p class="text-2xl font-bold text-health-green">${formatField(record.bmi)}</p>
+              </div>
+              <div class="text-center p-4 bg-health-green-light rounded-lg">
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Blood Pressure</label>
+                <p class="text-2xl font-bold text-health-green">${formatField(record.bp)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical History -->
+        <div class="medical-card border-l-4 border-doctor-purple">
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-doctor-purple mb-4 flex items-center">
+              <span class="text-2xl mr-2">📋</span> Medical History
+            </h4>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Medical History</label>
+                <div class="bg-gray-50 border rounded-lg p-4">
+                  <p class="text-gray-800">${formatField(record.medicalHistory)}</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Treatment History</label>
+                <div class="bg-gray-50 border rounded-lg p-4">
+                  <p class="text-gray-800">${formatField(record.treatmentHistory)}</p>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Surgical History</label>
+                <div class="bg-gray-50 border rounded-lg p-4">
+                  <p class="text-gray-800">${formatField(record.surgeryHistory)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact & Insurance -->
+        <div class="medical-card">
+          <div class="p-6">
+            <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+              <span class="text-2xl mr-2">📞</span> Contact & Insurance
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Phone</label>
+                <p class="text-lg font-medium">${formatField(record.phone)}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Email</label>
+                <p class="text-lg font-medium">${formatField(record.email)}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Insurance Provider</label>
+                <p class="text-lg font-medium">${formatField(record.insuranceProvider)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('CarePass Healthcare System Initialized');
+      
+      // Check for saved draft
+      if (localStorage.getItem('carepassDraft')) {
+        showToast("Draft Available", "You have saved information available", "info");
+      }
+    });
+  </script>
 </body>
 </html>

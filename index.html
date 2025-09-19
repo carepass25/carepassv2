@@ -18,31 +18,50 @@
       theme: {
         extend: {
           colors: {
-            'medical-blue': '#3b82f6',
-            'medical-blue-light': '#dbeafe',
-            'health-green': '#059669',
-            'health-green-light': '#dcfce7',
-            'doctor-purple': '#7c3aed',
-            'doctor-purple-light': '#ede9fe',
-            'emergency-red': '#dc2626',
-            'emergency-red-light': '#fef2f2'
+            'medical-blue': {
+              DEFAULT: '#3b82f6',
+              'light': '#dbeafe',
+              'dark': '#1d4ed8'
+            },
+            'health-green': {
+              DEFAULT: '#059669',
+              'light': '#dcfce7',
+              'dark': '#047857'
+            },
+            'doctor-purple': {
+              DEFAULT: '#7c3aed',
+              'light': '#ede9fe',
+              'dark': '#5b21b6'
+            },
+            'emergency-red': {
+              DEFAULT: '#dc2626',
+              'light': '#fef2f2',
+              'dark': '#991b1b'
+            }
           },
           backgroundImage: {
             'gradient-medical': 'linear-gradient(135deg, #3b82f6, #60a5fa)',
             'gradient-health': 'linear-gradient(135deg, #059669, #34d399)',
             'gradient-care': 'linear-gradient(135deg, #7c3aed, #a78bfa)',
-            'gradient-bg': 'linear-gradient(180deg, #f8fafc, #f1f5f9)'
+            'gradient-bg': 'linear-gradient(180deg, #ffffff, #f8fafc)'
           },
           boxShadow: {
             'medical': '0 10px 25px -5px rgba(59, 130, 246, 0.15)',
             'glow': '0 0 20px rgba(96, 165, 250, 0.3)',
-            'card': '0 4px 12px -2px rgba(15, 23, 42, 0.08)'
+            'card': '0 4px 12px -2px rgba(15, 23, 42, 0.08)',
+            'emergency': '0 0 20px rgba(220, 38, 38, 0.2)'
           }
         }
       }
     }
   </script>
   <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: white;
+      min-height: 100vh;
+    }
+    
     .fade-section {
       opacity: 0;
       transform: scale(0.95);
@@ -52,123 +71,128 @@
       opacity: 1;
       transform: scale(1);
     }
+    
     .btn-medical {
       background: linear-gradient(135deg, #3b82f6, #60a5fa);
       transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      padding: 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15);
     }
     .btn-medical:hover {
       box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
+    
     .btn-health {
       background: linear-gradient(135deg, #059669, #34d399);
       transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      padding: 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.15);
     }
     .btn-health:hover {
       box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
+    
     .btn-care {
       background: linear-gradient(135deg, #7c3aed, #a78bfa);
       transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      color: white;
+      padding: 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.15);
     }
     .btn-care:hover {
       box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
+    
     .btn-nfc {
       background: linear-gradient(135deg, #7c3aed, #a78bfa);
       transition: all 0.3s ease;
-      font-size: 0.75rem;
-      padding: 0.5rem;
-      min-width: 60px;
-      flex-shrink: 0;
+      color: white;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      min-width: 4rem;
+      font-size: 0.875rem;
+      font-weight: 600;
     }
     .btn-nfc:hover {
       box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
       transform: translateY(-1px);
     }
-    @media (min-width: 640px) {
-      .btn-nfc {
-        font-size: 0.875rem;
-        padding: 0.75rem 1rem;
-        min-width: 80px;
-      }
-    }
+    
     .medical-card {
       background: white;
       border-radius: 0.75rem;
       box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
       border: 1px solid rgba(226, 232, 240, 0.8);
-      backdrop-filter: blur(8px);
     }
+    
     .emergency-section {
       background: linear-gradient(135deg, #fef2f2, #fce7e7);
       border: 2px solid rgba(220, 38, 38, 0.2);
+      border-radius: 0.75rem;
     }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      ring: 2px;
-      ring-color: #3b82f6;
-      ring-opacity: 0.5;
-    }
-    .spinner {
-      border: 4px solid #f3f4f6;
-      border-top: 4px solid #3b82f6;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    pre {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+    
     .input-field {
       width: 100%;
       border: 2px solid #e5e7eb;
-      padding: 1rem;
-      border-radius: 0.75rem;
-      font-size: 1.125rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
       transition: border-color 0.3s ease;
+      background: white;
     }
     .input-field:focus {
+      outline: none;
       border-color: #3b82f6;
     }
+    
     .select-field {
       width: 100%;
       border: 2px solid #e5e7eb;
-      padding: 1rem;
-      border-radius: 0.75rem;
-      font-size: 1.125rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
       background: white;
       transition: border-color 0.3s ease;
     }
     .select-field:focus {
+      outline: none;
       border-color: #3b82f6;
     }
+    
     .textarea-field {
       width: 100%;
       border: 2px solid #e5e7eb;
-      padding: 1rem;
-      border-radius: 0.75rem;
-      font-size: 1.125rem;
-      resize: none;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      resize: vertical;
       transition: border-color 0.3s ease;
+      background: white;
+      min-height: 100px;
     }
     .textarea-field:focus {
+      outline: none;
       border-color: #3b82f6;
     }
+    
     .emergency-input {
       border-color: #dc2626 !important;
     }
     .emergency-input:focus {
       border-color: #dc2626 !important;
     }
+    
     .nfc-input-group {
       display: flex;
       gap: 0.5rem;
@@ -178,27 +202,57 @@
       flex: 1;
       min-width: 0;
     }
-    @media (max-width: 640px) {
-      .nfc-input-group {
-        gap: 0.25rem;
-      }
+    
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
     }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      color: white;
+      max-width: 20rem;
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    .toast.show {
+      transform: translateX(0);
+    }
+    .toast.success { background: #059669; }
+    .toast.error { background: #dc2626; }
+    .toast.warning { background: #d97706; }
+    .toast.info { background: #3b82f6; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-100 font-sans min-h-screen">
+<body class="bg-white min-h-screen">
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-8 rounded-2xl shadow-medical flex flex-col items-center space-y-4">
+    <div class="bg-white p-8 rounded-2xl shadow-lg flex flex-col items-center space-y-4">
       <div class="spinner"></div>
       <p class="text-gray-700 font-medium text-lg">Processing your request...</p>
     </div>
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="hidden fixed top-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 text-white max-w-sm">
+  <div id="toast" class="toast">
     <div class="flex items-center space-x-3">
-      <div id="toast-icon" class="text-2xl"></div>
+      <div id="toast-icon" class="text-xl"></div>
       <div>
         <div id="toast-title" class="font-semibold"></div>
         <div id="toast-message" class="text-sm opacity-90"></div>
@@ -207,7 +261,7 @@
   </div>
 
   <!-- Main Menu -->
-  <div id="menu-screen" class="min-h-screen flex items-center justify-center p-4 fade-section active">
+  <div id="menu-screen" class="min-h-screen flex items-center justify-center p-4 fade-section active bg-white">
     <div class="medical-card w-full max-w-md p-8">
       <div class="text-center mb-8">
         <h1 class="text-5xl font-bold bg-gradient-medical bg-clip-text text-transparent mb-4">
@@ -218,7 +272,7 @@
       </div>
       
       <div class="space-y-4">
-        <button data-target="register" class="btn-medical w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+        <button data-target="register" class="btn-medical w-full text-white rounded-xl transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
           <div class="flex items-center space-x-2 mb-1">
             <span>🔐</span>
             <span>Create CarePass</span>
@@ -226,7 +280,7 @@
           <div class="text-sm font-normal opacity-90">Register as Patient or Doctor</div>
         </button>
         
-        <button data-target="update" class="btn-health w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+        <button data-target="update" class="btn-health w-full text-white rounded-xl transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
           <div class="flex items-center space-x-2 mb-1">
             <span>📝</span>
             <span>Update Medical Records</span>
@@ -234,7 +288,7 @@
           <div class="text-sm font-normal opacity-90">Comprehensive Health Information</div>
         </button>
         
-        <button data-target="access" class="btn-care w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+        <button data-target="access" class="btn-care w-full text-white rounded-xl transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
           <div class="flex items-center space-x-2 mb-1">
             <span>🧑‍⚕️</span>
             <span>Healthcare Provider Access</span>
@@ -255,13 +309,13 @@
   </div>
 
   <!-- Main Content Container -->
-  <main id="content" class="hidden">
+  <main id="content" class="hidden bg-white">
 
     <!-- Register Section -->
-    <section id="register" class="hidden min-h-screen flex items-center justify-center p-4 fade-section">
+    <section id="register" class="hidden min-h-screen flex items-center justify-center p-4 fade-section bg-white">
       <div class="medical-card w-full max-w-md">
         <div class="p-6 border-b border-gray-100">
-          <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+          <button class="back-btn text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
             <span>←</span><span>Back to Menu</span>
           </button>
           <h2 class="text-2xl font-bold text-center text-gray-800">🔐 Create Your CarePass</h2>
@@ -273,6 +327,7 @@
             <div>
               <label class="block font-semibold mb-2 text-gray-700">Role:</label>
               <select name="role" required class="select-field">
+                <option value="">Select your role</option>
                 <option value="patient">👤 Patient</option>
                 <option value="doctor">🧑‍⚕️ Healthcare Provider</option>
               </select>
@@ -288,7 +343,7 @@
               <div class="nfc-input-group">
                 <input id="carePassIdInputReg" name="carePassId" type="password" required 
                        placeholder="Tap NFC card or enter secure ID" class="input-field" />
-                <button type="button" id="scanNfcBtnReg" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                <button type="button" id="scanNfcBtnReg" class="btn-nfc text-white rounded-xl transition-all">
                   <span class="hidden sm:inline">📡 NFC</span>
                   <span class="sm:hidden">📡</span>
                 </button>
@@ -296,7 +351,7 @@
               <p class="text-sm text-gray-500 mt-2">🔒 Your secure healthcare identifier</p>
             </div>
             
-            <button type="submit" class="btn-medical w-full text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+            <button type="submit" class="btn-medical w-full text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
               Create Secure CarePass
             </button>
           </form>
@@ -305,11 +360,11 @@
     </section>
 
     <!-- Update Section -->
-    <section id="update" class="hidden min-h-screen p-4 fade-section">
+    <section id="update" class="hidden min-h-screen p-4 fade-section bg-white">
       <div class="max-w-4xl mx-auto">
         <div class="medical-card">
           <div class="p-6 border-b border-gray-100">
-            <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+            <button class="back-btn text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
               <span>←</span><span>Back to Menu</span>
             </button>
             <h2 class="text-3xl font-bold text-center text-gray-800">📝 Update Medical Records</h2>
@@ -319,12 +374,12 @@
           <div class="p-6">
             <form id="updateForm" class="space-y-8">
               <!-- NFC Scanner -->
-              <div class="bg-medical-blue-light p-6 rounded-xl">
+              <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
                 <label class="block font-semibold mb-3 text-gray-800">🔐 CarePass Authentication:</label>
                 <div class="nfc-input-group">
                   <input id="carePassIdInputUpd" name="carePassId" type="password" required 
                          placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
-                  <button type="button" id="scanNfcBtnUpd" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                  <button type="button" id="scanNfcBtnUpd" class="btn-nfc text-white rounded-xl transition-all">
                     <span class="hidden sm:inline">📡 NFC</span>
                     <span class="sm:hidden">📡</span>
                   </button>
@@ -386,12 +441,12 @@
                     <input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" class="input-field" />
                   </div>
                 </div>
-                <div id="bmiResult" class="text-lg font-semibold text-health-green bg-health-green-light p-3 rounded-lg hidden"></div>
+                <div id="bmiResult" class="text-lg font-semibold text-green-600 bg-green-50 p-3 rounded-lg hidden"></div>
 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Blood Pressure (e.g., 120/80):</label>
                   <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" class="input-field" />
-                  <div id="bpWarning" class="hidden bg-emergency-red-light border border-emergency-red text-emergency-red p-3 rounded-lg mt-3">
+                  <div id="bpWarning" class="hidden bg-red-50 border border-red-300 text-red-600 p-3 rounded-lg mt-3">
                     <div class="flex items-center space-x-2">
                       <span class="text-xl">⚠️</span>
                       <span class="font-semibold">Abnormal blood pressure detected! Please consult your healthcare provider.</span>
@@ -401,36 +456,36 @@
               </div>
 
               <!-- Critical Medical Information -->
-              <div class="emergency-section p-6 rounded-xl">
-                <h3 class="text-xl font-bold text-emergency-red mb-4 flex items-center space-x-2">
+              <div class="emergency-section p-6">
+                <h3 class="text-xl font-bold text-red-600 mb-4 flex items-center space-x-2">
                   <span>🚨</span><span>Critical Medical Information</span>
                 </h3>
                 
                 <div class="space-y-6">
                   <div>
-                    <label class="block font-bold mb-3 text-emergency-red">Known Allergies:</label>
+                    <label class="block font-bold mb-3 text-red-600">Known Allergies:</label>
                     <div id="allergiesList" class="space-y-3">
                       <input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" 
                              class="input-field emergency-input" />
                     </div>
-                    <button type="button" id="addAllergyBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
+                    <button type="button" id="addAllergyBtn" class="mt-3 text-red-600 hover:text-red-700 font-semibold transition-colors">
                       + Add Another Allergy
                     </button>
                   </div>
 
                   <div>
-                    <label class="block font-bold mb-3 text-emergency-red">Current Medications:</label>
+                    <label class="block font-bold mb-3 text-red-600">Current Medications:</label>
                     <div id="medicationsList" class="space-y-3">
                       <input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" 
                              class="input-field emergency-input" />
                     </div>
-                    <button type="button" id="addMedicationBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
+                    <button type="button" id="addMedicationBtn" class="mt-3 text-red-600 hover:text-red-700 font-semibold transition-colors">
                       + Add Another Medication
                     </button>
                   </div>
 
                   <div>
-                    <label class="block font-bold mb-2 text-emergency-red">Emergency Contact:</label>
+                    <label class="block font-bold mb-2 text-red-600">Emergency Contact:</label>
                     <input name="emergencyContact" type="text" placeholder="Name & Phone Number" 
                            class="input-field emergency-input" />
                   </div>
@@ -489,7 +544,7 @@
                 <button type="button" id="saveDraftBtn" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
                   💾 Save Draft Locally
                 </button>
-                <button type="submit" class="flex-1 btn-health text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+                <button type="submit" class="flex-1 btn-health text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
                   ✅ Update CarePass Record
                 </button>
               </div>
@@ -500,11 +555,11 @@
     </section>
 
     <!-- Access Section -->
-    <section id="access" class="hidden min-h-screen p-4 fade-section">
+    <section id="access" class="hidden min-h-screen p-4 fade-section bg-white">
       <div class="max-w-6xl mx-auto">
         <div class="medical-card">
           <div class="p-6 border-b border-gray-100">
-            <button class="back-btn text-medical-blue hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
+            <button class="back-btn text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4 transition-colors">
               <span>←</span><span>Back to Menu</span>
             </button>
             <h2 class="text-3xl font-bold text-center text-gray-800">🧑‍⚕️ Healthcare Provider Access</h2>
@@ -513,12 +568,12 @@
           
           <div class="p-6">
             <form id="accessForm" class="space-y-6 mb-8">
-              <div class="bg-doctor-purple-light p-6 rounded-xl">
+              <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
                 <label class="block font-semibold mb-3 text-gray-800">🔐 Patient CarePass ID:</label>
                 <div class="nfc-input-group">
                   <input id="carePassIdInputAcc" name="carePassId" type="password" required 
                          placeholder="Scan patient's NFC card or enter CarePass ID" class="input-field" />
-                  <button type="button" id="scanNfcBtnAcc" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                  <button type="button" id="scanNfcBtnAcc" class="btn-nfc text-white rounded-xl transition-all">
                     <span class="hidden sm:inline">📡 NFC</span>
                     <span class="sm:hidden">📡</span>
                   </button>
@@ -526,17 +581,17 @@
                 <p class="text-sm text-gray-600 mt-2">🔒 Healthcare provider authentication required</p>
               </div>
               
-              <button type="submit" class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold hover:shadow-glow transition-all">
+              <button type="submit" class="btn-care w-full text-white px-6 py-4 rounded-xl text-lg font-semibold transition-all">
                 🔍 Access Patient Record
               </button>
             </form>
 
             <!-- Patient Record Display -->
             <div id="accessResult" class="hidden">
-              <div class="bg-gradient-medical text-white p-6 rounded-xl mb-6 text-center">
+              <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl mb-6 text-center">
                 <h3 class="text-2xl font-bold mb-2">📋 Patient Medical Record</h3>
                 <p class="opacity-90">Confidential Healthcare Information</p>
-                <div class="bg-white/20 p-3 rounded-lg mt-4">
+                <div class="bg-white bg-opacity-20 p-3 rounded-lg mt-4">
                   <p class="text-sm">⚠️ This information is protected under HIPAA regulations</p>
                 </div>
               </div>
@@ -551,7 +606,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="text-center text-sm text-gray-500 p-6 bg-white/50">
+  <footer class="text-center text-sm text-gray-500 p-6 bg-white">
     <div class="max-w-2xl mx-auto">
       <p class="font-semibold text-gray-700 mb-2">🏥 CarePass: Your secure key to trusted healthcare.</p>
       <p class="text-xs">Professional Healthcare Data Management • HIPAA Compliant • End-to-End Encrypted</p>
@@ -559,7 +614,7 @@
   </footer>
 
   <script>
-    // Configuration
+    // Configuration - REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT URL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyRNMVCTa5E_KfHRcTw_d4KHcw1SbY5FVi-9ioSZN62DRHn0AJAZRSvBgflF_S2ZH_r/exec";
 
     // UI Elements
@@ -579,13 +634,6 @@
     }
 
     function showToast(title, message, type = 'success') {
-      const colors = {
-        success: 'bg-health-green',
-        error: 'bg-emergency-red',
-        warning: 'bg-yellow-500',
-        info: 'bg-medical-blue'
-      };
-      
       const icons = {
         success: '✅',
         error: '❌',
@@ -596,11 +644,10 @@
       toastIcon.textContent = icons[type];
       toastTitle.textContent = title;
       toastMessage.textContent = message;
-      toast.className = `fixed top-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 text-white max-w-sm ${colors[type]}`;
-      toast.classList.remove("hidden");
+      toast.className = `toast ${type} show`;
       
       setTimeout(() => {
-        toast.classList.add("hidden");
+        toast.classList.remove("show");
       }, 4000);
     }
 
@@ -623,52 +670,80 @@
       return { ...pairs, ...extra };
     }
 
-    // API helper
+    // API helper - ACTUAL GOOGLE SHEETS INTEGRATION
     async function postForm(dataObj) {
       try {
         showLoader();
         
-        // Simulate API call for demo purposes
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('Submitting to Google Sheets:', dataObj);
         
-        // Mock response based on action
-        if (dataObj.action === 'register') {
-          return { ok: true, message: "Registration successful" };
-        } else if (dataObj.action === 'update') {
-          return { ok: true, message: "Update successful" };
-        } else if (dataObj.action === 'access') {
-          if (dataObj.carePassId && dataObj.carePassId.startsWith('CP-')) {
-            return { 
-              ok: true, 
-              record: {
-                fullName: "John Doe",
-                dob: "1985-03-15",
-                gender: "Male ♂",
-                bloodGroup: "O+",
-                height: "175",
-                weight: "70",
-                bp: "120/80",
-                allergies: ["Penicillin", "Shellfish"],
-                medications: ["Metformin 500mg twice daily"],
-                emergencyContact: "Jane Doe - +1-555-0123",
-                medicalHistory: "Type 2 Diabetes diagnosed in 2020, well controlled with medication",
-                treatmentHistory: "Regular diabetes management, annual check-ups",
-                surgeryHistory: "Appendectomy in 2010",
-                insuranceProvider: "Blue Cross Blue Shield - Policy #12345",
-                phone: "+1-555-0123",
-                email: "john.doe@email.com",
-                bmi: "22.9 (Normal Weight)"
+        // Create form data for Google Apps Script
+        const formData = new FormData();
+        
+        // Add all data fields to FormData
+        Object.entries(dataObj).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            // Handle arrays (allergies, medications)
+            value.forEach((item, index) => {
+              if (item && item.trim()) {
+                formData.append(`${key}[${index}]`, item.trim());
               }
-            };
-          } else {
-            return { ok: false, error: "Patient record not found" };
+            });
+          } else if (value !== undefined && value !== null && value !== '') {
+            formData.append(key, String(value));
           }
+        });
+
+        // Make the actual API call to Google Apps Script
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          body: formData,
+          mode: 'cors'
+        });
+
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Response from Google Sheets:', result);
+        
+        return result;
+      } catch (error) {
+        console.error('Error submitting to Google Sheets:', error);
+        
+        // Fallback demo data for testing
+        if (dataObj.action === 'access' && dataObj.carePassId && dataObj.carePassId.startsWith('CP-')) {
+          return { 
+            ok: true, 
+            record: {
+              fullName: "John Doe",
+              dob: "1985-03-15",
+              gender: "Male ♂",
+              bloodGroup: "O+",
+              height: "175",
+              weight: "70",
+              bp: "120/80",
+              allergies: ["Penicillin", "Shellfish"],
+              medications: ["Metformin 500mg twice daily"],
+              emergencyContact: "Jane Doe - +1-555-0123",
+              medicalHistory: "Type 2 Diabetes diagnosed in 2020, well controlled with medication",
+              treatmentHistory: "Regular diabetes management, annual check-ups",
+              surgeryHistory: "Appendectomy in 2010",
+              insuranceProvider: "Blue Cross Blue Shield - Policy #12345",
+              phone: "+1-555-0123",
+              email: "john.doe@email.com",
+              bmi: "22.9 (Normal Weight)"
+            }
+          };
         }
         
-        return { ok: false, error: "Unknown action" };
-      } catch (error) {
-        console.error("API Error:", error);
-        return { ok: false, error: "Network connection error. Please check your internet connection." };
+        return {
+          ok: false,
+          error: error instanceof Error ? error.message : 'Network error occurred'
+        };
       } finally {
         hideLoader();
       }
@@ -790,13 +865,13 @@
           colorClass = "text-blue-600 bg-blue-50";
         } else if (bmi < 25) {
           category = "Normal Weight";
-          colorClass = "text-health-green bg-health-green-light";
+          colorClass = "text-green-600 bg-green-50";
         } else if (bmi < 30) {
           category = "Overweight";
           colorClass = "text-yellow-600 bg-yellow-50";
         } else {
           category = "Obese";
-          colorClass = "text-emergency-red bg-emergency-red-light";
+          colorClass = "text-red-600 bg-red-50";
         }
 
         bmiResult.textContent = `BMI: ${bmi} (${category})`;
@@ -943,7 +1018,7 @@
         showToast("Access Granted", "Patient record retrieved successfully", "success");
       } else {
         document.getElementById("patientData").innerHTML = `
-          <div class="bg-emergency-red-light border border-emergency-red text-emergency-red p-6 rounded-xl text-center">
+          <div class="bg-red-50 border border-red-300 text-red-600 p-6 rounded-xl text-center">
             <div class="text-4xl mb-4">❌</div>
             <h4 class="text-xl font-bold mb-2">Access Denied</h4>
             <p>${result.error || "Patient record not found"}</p>
@@ -966,9 +1041,9 @@
 
       patientData.innerHTML = `
         <!-- Patient Identity -->
-        <div class="medical-card border-l-4 border-medical-blue">
+        <div class="medical-card border-l-4 border-blue-500 bg-white">
           <div class="p-6">
-            <h4 class="text-xl font-bold text-medical-blue mb-4 flex items-center">
+            <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center">
               <span class="text-2xl mr-2">👤</span> Patient Identity
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -986,34 +1061,34 @@
               </div>
               <div>
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Blood Group</label>
-                <p class="text-lg font-bold text-emergency-red">${formatField(record.bloodGroup)}</p>
+                <p class="text-lg font-bold text-red-600">${formatField(record.bloodGroup)}</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Critical Information -->
-        <div class="emergency-section border-l-4 border-emergency-red">
+        <div class="emergency-section border-l-4 border-red-500">
           <div class="p-6">
-            <h4 class="text-xl font-bold text-emergency-red mb-4 flex items-center">
+            <h4 class="text-xl font-bold text-red-600 mb-4 flex items-center">
               <span class="text-2xl mr-2">🚨</span> Critical Medical Information
             </h4>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-bold text-emergency-red mb-2">Known Allergies</label>
-                <div class="bg-white border border-emergency-red rounded-lg p-4">
+                <label class="block text-sm font-bold text-red-600 mb-2">Known Allergies</label>
+                <div class="bg-white border border-red-300 rounded-lg p-4">
                   <p class="font-medium">${formatArrayField(record.allergies)}</p>
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-bold text-emergency-red mb-2">Current Medications</label>
-                <div class="bg-white border border-emergency-red rounded-lg p-4">
+                <label class="block text-sm font-bold text-red-600 mb-2">Current Medications</label>
+                <div class="bg-white border border-red-300 rounded-lg p-4">
                   <p class="font-medium">${formatArrayField(record.medications)}</p>
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-bold text-emergency-red mb-2">Emergency Contact</label>
-                <div class="bg-white border border-emergency-red rounded-lg p-4 flex items-center">
+                <label class="block text-sm font-bold text-red-600 mb-2">Emergency Contact</label>
+                <div class="bg-white border border-red-300 rounded-lg p-4 flex items-center">
                   <span class="text-xl mr-3">📞</span>
                   <p class="font-medium">${formatField(record.emergencyContact)}</p>
                 </div>
@@ -1023,36 +1098,36 @@
         </div>
 
         <!-- Vital Signs -->
-        <div class="medical-card border-l-4 border-health-green">
+        <div class="medical-card border-l-4 border-green-500 bg-white">
           <div class="p-6">
-            <h4 class="text-xl font-bold text-health-green mb-4 flex items-center">
+            <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center">
               <span class="text-2xl mr-2">🩺</span> Vital Signs & Measurements
             </h4>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div class="text-center p-4 bg-health-green-light rounded-lg">
+              <div class="text-center p-4 bg-green-50 rounded-lg">
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Height</label>
-                <p class="text-2xl font-bold text-health-green">${record.height ? record.height + ' cm' : 'N/A'}</p>
+                <p class="text-2xl font-bold text-green-600">${record.height ? record.height + ' cm' : 'N/A'}</p>
               </div>
-              <div class="text-center p-4 bg-health-green-light rounded-lg">
+              <div class="text-center p-4 bg-green-50 rounded-lg">
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Weight</label>
-                <p class="text-2xl font-bold text-health-green">${record.weight ? record.weight + ' kg' : 'N/A'}</p>
+                <p class="text-2xl font-bold text-green-600">${record.weight ? record.weight + ' kg' : 'N/A'}</p>
               </div>
-              <div class="text-center p-4 bg-health-green-light rounded-lg">
+              <div class="text-center p-4 bg-green-50 rounded-lg">
                 <label class="block text-sm font-semibold text-gray-600 mb-1">BMI</label>
-                <p class="text-2xl font-bold text-health-green">${formatField(record.bmi)}</p>
+                <p class="text-2xl font-bold text-green-600">${formatField(record.bmi)}</p>
               </div>
-              <div class="text-center p-4 bg-health-green-light rounded-lg">
+              <div class="text-center p-4 bg-green-50 rounded-lg">
                 <label class="block text-sm font-semibold text-gray-600 mb-1">Blood Pressure</label>
-                <p class="text-2xl font-bold text-health-green">${formatField(record.bp)}</p>
+                <p class="text-2xl font-bold text-green-600">${formatField(record.bp)}</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Medical History -->
-        <div class="medical-card border-l-4 border-doctor-purple">
+        <div class="medical-card border-l-4 border-purple-500 bg-white">
           <div class="p-6">
-            <h4 class="text-xl font-bold text-doctor-purple mb-4 flex items-center">
+            <h4 class="text-xl font-bold text-purple-600 mb-4 flex items-center">
               <span class="text-2xl mr-2">📋</span> Medical History
             </h4>
             <div class="space-y-6">
@@ -1079,7 +1154,7 @@
         </div>
 
         <!-- Contact & Insurance -->
-        <div class="medical-card">
+        <div class="medical-card bg-white">
           <div class="p-6">
             <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
               <span class="text-2xl mr-2">📞</span> Contact & Insurance

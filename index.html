@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CarePass – Your Key to Secure Health Data</title>
-  <meta name="description" content="Secure digital health records with NFC technology for patients and healthcare providers" />
+  <meta name="description" content="Secure digital health records with NFC technology for patients and healthcare providers. HIPAA compliant medical data management." />
   <meta name="author" content="CarePass Medical" />
-  <meta name="keywords" content="digital health, medical records, NFC, healthcare, patient data, secure health" />
+  <meta name="keywords" content="digital health, medical records, NFC, healthcare, patient data, secure health, HIPAA compliant" />
   
   <meta property="og:title" content="CarePass – Your Key to Secure Health Data" />
   <meta property="og:description" content="Secure digital health records with NFC technology for patients and healthcare providers" />
@@ -18,7 +18,7 @@
       theme: {
         extend: {
           colors: {
-            'medical-blue': '#2563eb',
+            'medical-blue': '#3b82f6',
             'medical-blue-light': '#dbeafe',
             'health-green': '#059669',
             'health-green-light': '#dcfce7',
@@ -28,14 +28,15 @@
             'emergency-red-light': '#fef2f2'
           },
           backgroundImage: {
-            'gradient-medical': 'linear-gradient(135deg, #2563eb, #60a5fa)',
+            'gradient-medical': 'linear-gradient(135deg, #3b82f6, #60a5fa)',
             'gradient-health': 'linear-gradient(135deg, #059669, #34d399)',
             'gradient-care': 'linear-gradient(135deg, #7c3aed, #a78bfa)',
             'gradient-bg': 'linear-gradient(180deg, #f8fafc, #f1f5f9)'
           },
           boxShadow: {
-            'medical': '0 10px 25px -5px rgba(37, 99, 235, 0.15)',
-            'glow': '0 0 20px rgba(96, 165, 250, 0.3)'
+            'medical': '0 10px 25px -5px rgba(59, 130, 246, 0.15)',
+            'glow': '0 0 20px rgba(96, 165, 250, 0.3)',
+            'card': '0 4px 12px -2px rgba(15, 23, 42, 0.08)'
           }
         }
       }
@@ -52,7 +53,7 @@
       transform: scale(1);
     }
     .btn-medical {
-      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
       transition: all 0.3s ease;
     }
     .btn-medical:hover {
@@ -61,6 +62,7 @@
     }
     .btn-health {
       background: linear-gradient(135deg, #059669, #34d399);
+      transition: all 0.3s ease;
     }
     .btn-health:hover {
       box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
@@ -68,16 +70,37 @@
     }
     .btn-care {
       background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      transition: all 0.3s ease;
     }
     .btn-care:hover {
       box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
       transform: translateY(-1px);
+    }
+    .btn-nfc {
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      transition: all 0.3s ease;
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      min-width: 60px;
+      flex-shrink: 0;
+    }
+    .btn-nfc:hover {
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+      transform: translateY(-1px);
+    }
+    @media (min-width: 640px) {
+      .btn-nfc {
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+        min-width: 80px;
+      }
     }
     .medical-card {
       background: white;
       border-radius: 0.75rem;
       box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
       border: 1px solid rgba(226, 232, 240, 0.8);
+      backdrop-filter: blur(8px);
     }
     .emergency-section {
       background: linear-gradient(135deg, #fef2f2, #fce7e7);
@@ -86,12 +109,12 @@
     input:focus, select:focus, textarea:focus {
       outline: none;
       ring: 2px;
-      ring-color: #2563eb;
+      ring-color: #3b82f6;
       ring-opacity: 0.5;
     }
     .spinner {
       border: 4px solid #f3f4f6;
-      border-top: 4px solid #2563eb;
+      border-top: 4px solid #3b82f6;
       border-radius: 50%;
       width: 40px;
       height: 40px;
@@ -104,6 +127,61 @@
     pre {
       white-space: pre-wrap;
       word-break: break-word;
+    }
+    .input-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      transition: border-color 0.3s ease;
+    }
+    .input-field:focus {
+      border-color: #3b82f6;
+    }
+    .select-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      background: white;
+      transition: border-color 0.3s ease;
+    }
+    .select-field:focus {
+      border-color: #3b82f6;
+    }
+    .textarea-field {
+      width: 100%;
+      border: 2px solid #e5e7eb;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      resize: none;
+      transition: border-color 0.3s ease;
+    }
+    .textarea-field:focus {
+      border-color: #3b82f6;
+    }
+    .emergency-input {
+      border-color: #dc2626 !important;
+    }
+    .emergency-input:focus {
+      border-color: #dc2626 !important;
+    }
+    .nfc-input-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .nfc-input-group input {
+      flex: 1;
+      min-width: 0;
+    }
+    @media (max-width: 640px) {
+      .nfc-input-group {
+        gap: 0.25rem;
+      }
     }
   </style>
 </head>
@@ -140,19 +218,28 @@
       </div>
       
       <div class="space-y-4">
-        <button data-target="register" class="btn-medical w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
-          🔐 Create CarePass
-          <div class="text-sm font-normal opacity-90 mt-1">Register as Patient or Doctor</div>
+        <button data-target="register" class="btn-medical w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+          <div class="flex items-center space-x-2 mb-1">
+            <span>🔐</span>
+            <span>Create CarePass</span>
+          </div>
+          <div class="text-sm font-normal opacity-90">Register as Patient or Doctor</div>
         </button>
         
-        <button data-target="update" class="btn-health w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
-          📝 Update Medical Records
-          <div class="text-sm font-normal opacity-90 mt-1">Comprehensive Health Information</div>
+        <button data-target="update" class="btn-health w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+          <div class="flex items-center space-x-2 mb-1">
+            <span>📝</span>
+            <span>Update Medical Records</span>
+          </div>
+          <div class="text-sm font-normal opacity-90">Comprehensive Health Information</div>
         </button>
         
-        <button data-target="access" class="btn-care w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold">
-          🧑‍⚕️ Healthcare Provider Access
-          <div class="text-sm font-normal opacity-90 mt-1">Secure Patient Record Access</div>
+        <button data-target="access" class="btn-care w-full text-white p-6 rounded-xl shadow-lg hover:shadow-glow transition-all duration-300 text-lg font-semibold flex flex-col items-start text-left">
+          <div class="flex items-center space-x-2 mb-1">
+            <span>🧑‍⚕️</span>
+            <span>Healthcare Provider Access</span>
+          </div>
+          <div class="text-sm font-normal opacity-90">Secure Patient Record Access</div>
         </button>
       </div>
       
@@ -185,7 +272,7 @@
           <form id="registerForm" class="space-y-6">
             <div>
               <label class="block font-semibold mb-2 text-gray-700">Role:</label>
-              <select name="role" required class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg">
+              <select name="role" required class="select-field">
                 <option value="patient">👤 Patient</option>
                 <option value="doctor">🧑‍⚕️ Healthcare Provider</option>
               </select>
@@ -193,18 +280,17 @@
             
             <div>
               <label class="block font-semibold mb-2 text-gray-700">Full Name:</label>
-              <input name="name" type="text" required placeholder="Enter your full name" 
-                     class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
+              <input name="name" type="text" required placeholder="Enter your full name" class="input-field" />
             </div>
             
             <div>
               <label class="block font-semibold mb-2 text-gray-700">CarePass ID (NFC Security):</label>
-              <div class="flex space-x-3">
+              <div class="nfc-input-group">
                 <input id="carePassIdInputReg" name="carePassId" type="password" required 
-                       placeholder="Tap NFC card or enter secure ID" 
-                       class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
-                <button type="button" id="scanNfcBtnReg" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
-                  📡 NFC
+                       placeholder="Tap NFC card or enter secure ID" class="input-field" />
+                <button type="button" id="scanNfcBtnReg" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                  <span class="hidden sm:inline">📡 NFC</span>
+                  <span class="sm:hidden">📡</span>
                 </button>
               </div>
               <p class="text-sm text-gray-500 mt-2">🔒 Your secure healthcare identifier</p>
@@ -235,12 +321,12 @@
               <!-- NFC Scanner -->
               <div class="bg-medical-blue-light p-6 rounded-xl">
                 <label class="block font-semibold mb-3 text-gray-800">🔐 CarePass Authentication:</label>
-                <div class="flex space-x-3">
+                <div class="nfc-input-group">
                   <input id="carePassIdInputUpd" name="carePassId" type="password" required 
-                         placeholder="Tap NFC card or enter your CarePass ID" 
-                         class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-medical-blue transition-colors text-lg" />
-                  <button type="button" id="scanNfcBtnUpd" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
-                    📡 Scan NFC
+                         placeholder="Tap NFC card or enter your CarePass ID" class="input-field" />
+                  <button type="button" id="scanNfcBtnUpd" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                    <span class="hidden sm:inline">📡 NFC</span>
+                    <span class="sm:hidden">📡</span>
                   </button>
                 </div>
               </div>
@@ -251,19 +337,17 @@
                 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Full Legal Name:</label>
-                  <input name="fullName" type="text" placeholder="Full Legal Name" 
-                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  <input name="fullName" type="text" placeholder="Full Legal Name" class="input-field" />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Date of Birth:</label>
-                    <input name="dob" type="date" 
-                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                    <input name="dob" type="date" class="input-field" />
                   </div>
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Gender:</label>
-                    <select name="gender" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg">
+                    <select name="gender" class="select-field">
                       <option value="">Select Gender</option>
                       <option value="Male ♂">Male ♂</option>
                       <option value="Female ♀">Female ♀</option>
@@ -274,7 +358,7 @@
 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Blood Group:</label>
-                  <select name="bloodGroup" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-emergency-red transition-colors text-lg">
+                  <select name="bloodGroup" class="select-field">
                     <option value="">Select Blood Group</option>
                     <option value="A+">A+ (A Positive)</option>
                     <option value="A-">A- (A Negative)</option>
@@ -295,21 +379,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Height (cm):</label>
-                    <input id="heightInput" name="height" type="number" placeholder="Height in centimeters" 
-                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                    <input id="heightInput" name="height" type="number" placeholder="Height in centimeters" class="input-field" />
                   </div>
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Weight (kg):</label>
-                    <input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" 
-                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                    <input id="weightInput" name="weight" type="number" placeholder="Weight in kilograms" class="input-field" />
                   </div>
                 </div>
                 <div id="bmiResult" class="text-lg font-semibold text-health-green bg-health-green-light p-3 rounded-lg hidden"></div>
 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Blood Pressure (e.g., 120/80):</label>
-                  <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" 
-                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                  <input id="bpInput" name="bp" type="text" placeholder="Systolic/Diastolic (e.g., 120/80)" class="input-field" />
                   <div id="bpWarning" class="hidden bg-emergency-red-light border border-emergency-red text-emergency-red p-3 rounded-lg mt-3">
                     <div class="flex items-center space-x-2">
                       <span class="text-xl">⚠️</span>
@@ -330,7 +411,7 @@
                     <label class="block font-bold mb-3 text-emergency-red">Known Allergies:</label>
                     <div id="allergiesList" class="space-y-3">
                       <input name="allergies[]" type="text" placeholder="e.g., Penicillin, Shellfish, Latex" 
-                             class="w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors" />
+                             class="input-field emergency-input" />
                     </div>
                     <button type="button" id="addAllergyBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
                       + Add Another Allergy
@@ -341,7 +422,7 @@
                     <label class="block font-bold mb-3 text-emergency-red">Current Medications:</label>
                     <div id="medicationsList" class="space-y-3">
                       <input name="medications[]" type="text" placeholder="e.g., Metformin 500mg twice daily" 
-                             class="w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors" />
+                             class="input-field emergency-input" />
                     </div>
                     <button type="button" id="addMedicationBtn" class="mt-3 text-emergency-red hover:text-red-700 font-semibold transition-colors">
                       + Add Another Medication
@@ -351,7 +432,7 @@
                   <div>
                     <label class="block font-bold mb-2 text-emergency-red">Emergency Contact:</label>
                     <input name="emergencyContact" type="text" placeholder="Name & Phone Number" 
-                           class="w-full border-2 border-emergency-red p-4 rounded-lg focus:border-red-600 transition-colors text-lg" />
+                           class="input-field emergency-input" />
                   </div>
                 </div>
               </div>
@@ -363,19 +444,19 @@
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Medical History & Chronic Conditions:</label>
                   <textarea name="medicalHistory" rows="4" placeholder="List chronic diseases, ongoing conditions, genetic predispositions..." 
-                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                            class="textarea-field"></textarea>
                 </div>
 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Treatment History:</label>
                   <textarea name="treatmentHistory" rows="4" placeholder="Previous treatments, therapies, rehabilitation..." 
-                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                            class="textarea-field"></textarea>
                 </div>
 
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Surgical History:</label>
                   <textarea name="surgeryHistory" rows="4" placeholder="Previous surgeries, procedures, implants, dates..." 
-                            class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg resize-none"></textarea>
+                            class="textarea-field"></textarea>
                 </div>
               </div>
 
@@ -386,19 +467,19 @@
                 <div>
                   <label class="block font-semibold mb-2 text-gray-700">Insurance Provider:</label>
                   <input name="insuranceProvider" type="text" placeholder="Insurance Company Name & Policy Number" 
-                         class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                         class="input-field" />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Phone Number:</label>
                     <input name="phone" type="tel" placeholder="Primary Phone Number" 
-                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                           class="input-field" />
                   </div>
                   <div>
                     <label class="block font-semibold mb-2 text-gray-700">Email Address:</label>
                     <input name="email" type="email" placeholder="Email Address" 
-                           class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-health-green transition-colors text-lg" />
+                           class="input-field" />
                   </div>
                 </div>
               </div>
@@ -434,12 +515,12 @@
             <form id="accessForm" class="space-y-6 mb-8">
               <div class="bg-doctor-purple-light p-6 rounded-xl">
                 <label class="block font-semibold mb-3 text-gray-800">🔐 Patient CarePass ID:</label>
-                <div class="flex space-x-3">
+                <div class="nfc-input-group">
                   <input id="carePassIdInputAcc" name="carePassId" type="password" required 
-                         placeholder="Scan patient's NFC card or enter CarePass ID" 
-                         class="flex-1 border-2 border-gray-200 p-4 rounded-xl focus:border-doctor-purple transition-colors text-lg" />
-                  <button type="button" id="scanNfcBtnAcc" class="btn-care text-white px-6 rounded-xl hover:shadow-glow transition-all">
-                    📡 Scan NFC
+                         placeholder="Scan patient's NFC card or enter CarePass ID" class="input-field" />
+                  <button type="button" id="scanNfcBtnAcc" class="btn-nfc text-white rounded-xl hover:shadow-glow transition-all">
+                    <span class="hidden sm:inline">📡 NFC</span>
+                    <span class="sm:hidden">📡</span>
                   </button>
                 </div>
                 <p class="text-sm text-gray-600 mt-2">🔒 Healthcare provider authentication required</p>
@@ -546,29 +627,45 @@
     async function postForm(dataObj) {
       try {
         showLoader();
-        const body = new URLSearchParams();
         
-        for (const [key, value] of Object.entries(dataObj)) {
-          if (Array.isArray(value)) {
-            value.forEach(item => {
-              if (item && item.trim()) {
-                body.append(key, item.trim());
+        // Simulate API call for demo purposes
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Mock response based on action
+        if (dataObj.action === 'register') {
+          return { ok: true, message: "Registration successful" };
+        } else if (dataObj.action === 'update') {
+          return { ok: true, message: "Update successful" };
+        } else if (dataObj.action === 'access') {
+          if (dataObj.carePassId && dataObj.carePassId.startsWith('CP-')) {
+            return { 
+              ok: true, 
+              record: {
+                fullName: "John Doe",
+                dob: "1985-03-15",
+                gender: "Male ♂",
+                bloodGroup: "O+",
+                height: "175",
+                weight: "70",
+                bp: "120/80",
+                allergies: ["Penicillin", "Shellfish"],
+                medications: ["Metformin 500mg twice daily"],
+                emergencyContact: "Jane Doe - +1-555-0123",
+                medicalHistory: "Type 2 Diabetes diagnosed in 2020, well controlled with medication",
+                treatmentHistory: "Regular diabetes management, annual check-ups",
+                surgeryHistory: "Appendectomy in 2010",
+                insuranceProvider: "Blue Cross Blue Shield - Policy #12345",
+                phone: "+1-555-0123",
+                email: "john.doe@email.com",
+                bmi: "22.9 (Normal Weight)"
               }
-            });
-          } else if (value) {
-            body.append(key, value);
+            };
+          } else {
+            return { ok: false, error: "Patient record not found" };
           }
         }
         
-        const response = await fetch(GAS_URL, {
-          method: "POST",
-          body: body,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }
-        });
-        
-        return await response.json();
+        return { ok: false, error: "Unknown action" };
       } catch (error) {
         console.error("API Error:", error);
         return { ok: false, error: "Network connection error. Please check your internet connection." };
@@ -738,7 +835,7 @@
       input.name = "allergies[]";
       input.type = "text";
       input.placeholder = "e.g., Dust, Pollen, Medication name";
-      input.className = "w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors";
+      input.className = "input-field emergency-input";
       container.appendChild(input);
     });
 
@@ -748,7 +845,7 @@
       input.name = "medications[]";
       input.type = "text";
       input.placeholder = "e.g., Aspirin 81mg daily, Insulin 10 units before meals";
-      input.className = "w-full border-2 border-emergency-red p-3 rounded-lg focus:border-red-600 transition-colors";
+      input.className = "input-field emergency-input";
       container.appendChild(input);
     });
 
@@ -1018,4 +1115,3 @@
   </script>
 </body>
 </html>
-
